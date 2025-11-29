@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HypeCam | Glitch-Pop Live Studio</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="grid">
+    <header class="app-header">
+      <div class="title-block">
+        <div class="title-glitch" aria-hidden="true">HypeCam</div>
+        <h1>HypeCam</h1>
+        <p class="subtitle">Glitch-pop live studio with AI crowd energy</p>
+      </div>
+      <div class="controls">
+        <button id="startBtn" class="btn primary">Start Stream</button>
+        <button id="stopBtn" class="btn" disabled>End Stream</button>
+        <button id="downloadBtn" class="btn ghost" disabled>Download MP4</button>
+      </div>
+    </header>
+
+    <main class="live-stage">
+      <section class="video-pane">
+        <div class="live-badge" id="liveBadge"><span class="pulse"></span>OFF AIR</div>
+        <video id="preview" playsinline autoplay muted></video>
+        <div class="readout">
+          <div class="stat"><span class="label">Latency</span><span id="latencyLabel">—</span></div>
+          <div class="stat"><span class="label">Comments</span><span id="commentCount">0</span></div>
+          <div class="stat"><span class="label">Status</span><span id="statusLabel">Waiting to go live</span></div>
+        </div>
+      </section>
+
+      <section class="chat-pane">
+        <div class="chat-header">
+          <div>
+            <p class="eyebrow">Gemini-powered crowd</p>
+            <h2>Live Comments</h2>
+          </div>
+          <div class="hint" id="speechHint">Enable your mic & camera to see live reactions.</div>
+        </div>
+        <div class="comment-stream" id="commentStream" aria-live="polite"></div>
+      </section>
+    </main>
+  </div>
+
+  <template id="commentTemplate">
+    <article class="comment">
+      <div class="avatar" aria-hidden="true"></div>
+      <div>
+        <div class="meta">
+          <span class="username"></span>
+          <span class="timestamp"></span>
+        </div>
+        <p class="body"></p>
+      </div>
+    </article>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
