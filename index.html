@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="HypeCam — glitch-pop live streaming studio with AI-powered crowd reactions. Runs entirely in your browser." />
   <title>HypeCam | Glitch-Pop Live Studio</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -10,40 +11,63 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="grid">
-    <header class="app-header">
+  <a class="skip-link" href="#commentStream">Skip to comments</a>
+
+  <div class="grid" role="application" aria-label="HypeCam Live Studio">
+    <header class="app-header" role="banner">
       <div class="title-block">
         <div class="title-glitch" aria-hidden="true">HypeCam</div>
         <h1>HypeCam</h1>
         <p class="subtitle">Glitch-pop live studio with AI crowd energy</p>
       </div>
-      <div class="controls">
-        <button id="startBtn" class="btn primary">Start Stream</button>
-        <button id="stopBtn" class="btn" disabled>End Stream</button>
-        <button id="downloadBtn" class="btn ghost" disabled>Download MP4</button>
-      </div>
+      <nav class="controls" aria-label="Stream controls">
+        <button id="startBtn" class="btn primary" aria-describedby="startHint">
+          Start Stream <kbd class="kbd-hint">S</kbd>
+        </button>
+        <button id="stopBtn" class="btn" disabled aria-describedby="stopHint">
+          End Stream <kbd class="kbd-hint">E</kbd>
+        </button>
+        <a id="downloadBtn" class="btn ghost" disabled role="button" aria-disabled="true">Download MP4</a>
+        <span id="startHint" hidden>Press S to start streaming</span>
+        <span id="stopHint" hidden>Press E to end streaming</span>
+      </nav>
     </header>
 
-    <main class="live-stage">
-      <section class="video-pane">
-        <div class="live-badge" id="liveBadge"><span class="pulse"></span>OFF AIR</div>
-        <video id="preview" playsinline autoplay muted></video>
-        <div class="readout">
-          <div class="stat"><span class="label">Latency</span><span id="latencyLabel">—</span></div>
-          <div class="stat"><span class="label">Comments</span><span id="commentCount">0</span></div>
-          <div class="stat"><span class="label">Status</span><span id="statusLabel">Waiting to go live</span></div>
+    <main class="live-stage" id="main">
+      <section class="video-pane" aria-label="Video preview">
+        <div class="live-badge" id="liveBadge" role="status" aria-live="polite">
+          <span class="pulse" aria-hidden="true"></span>OFF AIR
+        </div>
+        <video id="preview" playsinline autoplay muted aria-label="Camera preview"></video>
+        <div class="readout" aria-label="Stream statistics">
+          <div class="stat"><span class="label">Latency</span><span id="latencyLabel" aria-label="Current latency">—</span></div>
+          <div class="stat"><span class="label">Comments</span><span id="commentCount" aria-label="Comment count">0</span></div>
+          <div class="stat"><span class="label">Status</span><span id="statusLabel" aria-label="Stream status">Waiting to go live</span></div>
+          <div class="stat"><span class="label">Duration</span><span id="streamTimer" aria-label="Stream duration">00:00</span></div>
+          <div class="stat"><span class="label">Viewers</span><span id="viewerCount" aria-label="Viewer count">—</span></div>
         </div>
       </section>
 
-      <section class="chat-pane">
+      <section class="chat-pane" aria-label="Live comments">
         <div class="chat-header">
           <div>
-            <p class="eyebrow">Gemini-powered crowd</p>
+            <p class="eyebrow">AI-powered crowd</p>
             <h2>Live Comments</h2>
           </div>
-          <div class="hint" id="speechHint">Enable your mic & camera to see live reactions.</div>
+          <div class="hint" id="speechHint" role="status" aria-live="polite">Enable your mic &amp; camera to see live reactions.</div>
         </div>
-        <div class="comment-stream" id="commentStream" aria-live="polite"></div>
+        <div class="typing-indicator" id="typingIndicator" hidden aria-live="polite"></div>
+        <div class="comment-stream" id="commentStream" role="log" aria-live="polite" aria-label="Comment stream" tabindex="0"></div>
+        <div class="emoji-bar" id="emojiBar" role="toolbar" aria-label="Emoji reactions">
+          <button class="emoji-btn" type="button" aria-label="Fire reaction">🔥</button>
+          <button class="emoji-btn" type="button" aria-label="Heart reaction">💜</button>
+          <button class="emoji-btn" type="button" aria-label="Clap reaction">👏</button>
+          <button class="emoji-btn" type="button" aria-label="Sparkle reaction">✨</button>
+          <button class="emoji-btn" type="button" aria-label="100 reaction">💯</button>
+          <button class="emoji-btn" type="button" aria-label="Target reaction">🎯</button>
+          <button class="emoji-btn" type="button" aria-label="Lightning reaction">⚡</button>
+          <button class="emoji-btn" type="button" aria-label="Rocket reaction">🚀</button>
+        </div>
       </section>
     </main>
   </div>

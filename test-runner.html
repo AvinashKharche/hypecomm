@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>HypeCam Tests</title>
+  <style>
+    body { font-family: monospace; background: #1a1a2e; color: #e0e0e0; padding: 24px; }
+    h1 { color: #7affcf; }
+    pre { white-space: pre-wrap; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <h1>HypeCam Test Runner</h1>
+  <pre id="output">Running tests...</pre>
+
+  <!-- Minimal DOM stubs so app.js can initialize -->
+  <div hidden>
+    <button id="startBtn"></button>
+    <button id="stopBtn" disabled></button>
+    <a id="downloadBtn" disabled></a>
+    <video id="preview"></video>
+    <div id="liveBadge"></div>
+    <span id="statusLabel"></span>
+    <span id="latencyLabel"></span>
+    <span id="commentCount"></span>
+    <div id="commentStream"></div>
+    <template id="commentTemplate">
+      <article class="comment">
+        <div class="avatar"></div>
+        <div><div class="meta"><span class="username"></span><span class="timestamp"></span></div><p class="body"></p></div>
+      </article>
+    </template>
+    <div id="speechHint"></div>
+    <span id="streamTimer"></span>
+    <span id="viewerCount"></span>
+    <div id="typingIndicator" hidden></div>
+    <div id="emojiBar"></div>
+  </div>
+
+  <script>
+    // Capture console output for display
+    const outputEl = document.getElementById('output');
+    const lines = [];
+    const origLog = console.log;
+    const origError = console.error;
+    console.log = (...args) => { origLog(...args); lines.push(args.join(' ')); outputEl.textContent = lines.join('\n'); };
+    console.error = (...args) => { origError(...args); lines.push(args.join(' ')); outputEl.textContent = lines.join('\n'); };
+  </script>
+  <script src="app.js"></script>
+  <script src="app.test.js"></script>
+</body>
+</html>
