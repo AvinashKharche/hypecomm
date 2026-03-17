@@ -5,12 +5,14 @@
   <title>HypeCam Tests</title>
   <style>
     body { font-family: monospace; background: #1a1a2e; color: #e0e0e0; padding: 24px; }
-    h1 { color: #7affcf; }
-    pre { white-space: pre-wrap; line-height: 1.6; }
+    h1 { color: #7affcf; margin-bottom: 8px; }
+    p.sub { color: #8ba0b8; margin-top: 0; }
+    pre { white-space: pre-wrap; line-height: 1.6; font-size: 13px; }
   </style>
 </head>
 <body>
   <h1>HypeCam Test Runner</h1>
+  <p class="sub">Framework-free unit &amp; integration tests</p>
   <pre id="output">Running tests...</pre>
 
   <!-- Minimal DOM stubs so app.js can initialize -->
@@ -35,10 +37,32 @@
     <span id="viewerCount"></span>
     <div id="typingIndicator" hidden></div>
     <div id="emojiBar"></div>
+    <canvas id="visualizerCanvas"></canvas>
+    <div id="hypeMeter"></div>
+    <div id="hypeFill"></div>
+    <span id="hypeLabel"></span>
+    <div id="filterBar"></div>
+    <button id="highlightBtn" disabled></button>
+    <div id="highlightsList"></div>
+    <input id="chatInput" />
+    <button id="chatSendBtn"></button>
+    <div id="moodIndicator"></div>
+    <span id="moodLabel"></span>
+    <span id="moodIcon"></span>
+    <button id="pipBtn" disabled></button>
+    <button id="fullscreenBtn" disabled></button>
+    <button id="screenshotBtn" disabled></button>
+    <button id="soundToggle"></button>
+    <div id="toastContainer"></div>
+    <div id="confettiLayer"></div>
+    <div id="recapModal" hidden></div>
+    <div id="recapContent"></div>
+    <button id="recapClose"></button>
+    <canvas id="sparklineCanvas"></canvas>
+    <div id="videoOverlay"></div>
   </div>
 
   <script>
-    // Capture console output for display
     const outputEl = document.getElementById('output');
     const lines = [];
     const origLog = console.log;
