@@ -1,79 +1,69 @@
-# HypeCam
+# HypeComm
 
-A state-of-the-art glitch-pop live streaming studio where your camera feed meets AI-powered crowd reactions. Everything runs entirely client-side — no server, no dependencies, no build step.
+A communication skills practice tool. Pick a topic, speak on camera, and get real-time AI audience reactions plus a performance scorecard analyzing your pace, filler words, and fluency. Everything runs client-side — no server, no dependencies, no build step.
+
+## How It Works
+
+1. **Choose a topic category** — Impromptu, Persuasion, Storytelling, Elevator Pitch, Debate, or Explain It
+2. **Choose a time mode** — Quick Fire (30s), Short Talk (60s), Presentation (2min), Deep Dive (5min), or Free Practice
+3. **See your topic** and shuffle for a new one if you want
+4. **Start practicing** — the app accesses your camera and mic, counts you down 3-2-1, then you speak
+5. **Get live audience reactions** — AI audience members comment on what you're saying in real time
+6. **Review your scorecard** — after time's up (or you stop early), see your Overall Score with breakdowns for Pace, Clarity, and Fluency
 
 ## Features
 
-### Core Streaming
-- **Live video capture** via `getUserMedia` + `MediaRecorder` with MP4/WebM auto-negotiation
-- **Speech recognition** converts your words into crowd comments in real time
-- **Downloadable recordings** saved as MP4 (or WebM fallback)
+### Topic Database
+- **6 categories** with 12-15 topics each (~80 total)
+- Impromptu, Persuasion, Storytelling, Elevator Pitch, Debate, Explain It
+- Shuffle for a random topic within your category
 
-### AI Crowd System
-- **30 unique personas** — each AI commenter has a consistent mood (hype, chill, curious, supportive, analytical) and style (exclamation, poetic, technical, meme, etc.)
-- **Threaded conversations** — AI commenters reply to each other with @mentions
-- **Cross-topic callbacks** — the crowd references earlier topics for conversational depth
-- **Sentiment-matched templates** — comments match each persona's personality
+### Speech Analysis
+- **Words per minute (WPM)** — ideal range 130-160 WPM
+- **Filler word detection** — tracks "um", "uh", "like", "you know", "basically", "actually", and 12+ more
+- **Pause detection** — counts long pauses (>2s) and tracks longest pause
+- **Full transcript** — see everything you said after the session
 
-### Audio & Visuals
-- **Real-time audio visualizer** — canvas-based frequency bar display synced to your microphone
-- **6 video filters** — Normal, Glitch, VHS, Neon, Noir, Thermal (applied live + to screenshots)
-- **Scanline overlay** — subtle CRT-style scanlines when live
-- **Sound effects** — Web Audio API tones for go-live, comments, milestones, screenshots, emoji
+### Scoring (0-100)
+- **Pace Score** — based on WPM relative to ideal range
+- **Clarity Score** — based on filler word percentage
+- **Fluency Score** — based on pause frequency
+- **Overall Score** — average of all three
 
-### Engagement Features
-- **Hype meter** — real-time energy gauge (0–100%) that rises with comments and decays over time
-- **Crowd mood indicator** — emoji-based mood that shifts from Chill to Erupting
-- **Emoji reactions** — 8 emoji buttons with burst floating animations
-- **Milestone system** — confetti + toast at 10, 25, 50, 100, 200, 500 comments
-- **Simulated viewer count** with sparkline trend chart
-- **User chat input** — type messages that the AI crowd responds to
+### AI Audience
+- 20 unique audience members with names and avatars
+- **Category-aware reactions** — persuasion gets debate-style comments, storytelling gets narrative reactions, etc.
+- Real-time comments that respond to your actual words via speech recognition
 
-### Pro Tools
-- **Stream highlights** — bookmark moments with timestamps during your stream
-- **Screenshot capture** — save a still with watermark + active filter applied
-- **Picture-in-Picture** — pop out the video while multitasking
-- **Fullscreen mode** — immersive full-screen video
-- **Stream recap modal** — end-of-stream stats (duration, comments, peak viewers, highlights)
+### Progress Tracking (localStorage)
+- **Session history** — last 100 sessions with scores
+- **Daily streak** counter
+- **Personal bests** — highest score, best WPM, lowest filler rate
+- **Visual chart** — bar chart of last 10 session scores
 
-### Accessibility & UX
-- **9 keyboard shortcuts** (see table below)
-- **ARIA roles** — `role="log"`, `role="meter"`, `role="dialog"`, `aria-live` throughout
-- **Skip navigation** link for keyboard users
-- **`prefers-reduced-motion`** support — all animations disabled
-- **Focus-visible styles** — clear focus ring for keyboard navigation
-- **Sound toggle** — mute/unmute all audio feedback
-
-## Keyboard Shortcuts
-
-| Key | Action |
-|-----|--------|
-| `S` | Start stream |
-| `E` | End stream |
-| `H` | Add highlight |
-| `P` | Toggle Picture-in-Picture |
-| `F` | Toggle fullscreen |
-| `C` | Take screenshot |
-| `M` | Toggle sound |
-| `Esc` | Close recap modal |
-| `Enter` | Send chat message (when input focused) |
+### Practice UX
+- **Countdown timer** with visual progress bar and warning state
+- **Audio visualizer** — real-time frequency bars showing your voice
+- **Engagement meter** — see how engaged the AI audience is
+- **Sound effects** — countdown beeps, start/complete tones
+- **Sound toggle** — mute/unmute
 
 ## Getting Started
-
-Open `index.html` in a modern browser with camera/mic access:
 
 ```bash
 python3 -m http.server 8000
 # Visit http://localhost:8000
 ```
 
+Or just open `index.html` directly in Chrome/Edge (mic + camera required).
+
 ## Architecture
 
 ```
-index.html          Entry point — semantic HTML, ARIA, all UI elements
-style.css           Styling, animations, responsive layout, reduced-motion
-app.js              Application logic (class-based, ~600 lines)
-app.test.js         Unit tests (framework-free, ~250 lines)
+index.html          Entry point — setup phase + practice phase layout
+style.css           Styling, responsive, reduced-motion support
+app.js              Application logic (~600 lines)
+app.test.js         Unit tests (~220 lines)
 test-runner.html    Browser-based test runner
 ```
 
@@ -81,48 +71,50 @@ test-runner.html    Browser-based test runner
 
 | Component | Purpose |
 |-----------|---------|
-| `SoundEngine` | Web Audio API tone synthesis for all events |
-| `AudioVisualizer` | Real-time canvas frequency bars from mic input |
-| `ConfettiEngine` | Particle burst system for milestones |
-| `ToastManager` | Slide-in notification system |
-| `Sparkline` | Mini canvas chart for viewer count trend |
-| `CommentEngine` | Persona-based AI comment generation with threads |
-| `HypeCam` | Main app class — state, media, speech, all UI |
+| `SpeechAnalyzer` | Tracks transcripts, counts filler words, calculates WPM, generates scorecard |
+| `AudienceEngine` | Category-aware AI comment generation |
+| `SoundEngine` | Web Audio API tones for countdown, start, complete, comments |
+| `AudioVisualizer` | Real-time canvas frequency bars from mic |
+| `ToastManager` | Slide-in notifications |
+| `ProgressStore` | localStorage persistence for sessions, streaks, personal bests |
+| `HypeComm` | Main app — practice flow, speech recognition, UI state machine |
 
-### State Management
+### App State Machine
 
-All mutable state lives in `HypeCam.state`. No globals beyond the single `HypeCam` instance and DOM references.
+```
+setup → countdown → speaking → feedback → setup
+```
 
 ## Running Tests
 
 Open `test-runner.html` in a browser. Tests cover:
 
-- Utilities (`choose`, `isoTime`, `formatDuration`, `clamp`, `friendlyMediaError`)
-- All constants validation (TIMING, NAME_POOL, PERSONAS, VIDEO_FILTERS, MILESTONES)
-- `CommentEngine` — generation, persona matching, threads, topic tracking
-- `SoundEngine`, `AudioVisualizer`, `ConfettiEngine`, `ToastManager`, `Sparkline`
+- Utilities (choose, clamp, formatDuration, friendlyMediaError)
+- Topic database validation (categories, counts, structure)
+- Practice modes validation
+- Filler word list validation
+- SpeechAnalyzer (word counting, filler detection, scoring, transcript building)
+- AudienceEngine (generation, topic tracking)
+- ProgressStore (sessions, personal bests, streaks)
+- SoundEngine, AudioVisualizer, ToastManager
 
 ## Browser Compatibility
 
 | Feature | Chrome | Firefox | Safari | Edge |
 |---------|--------|---------|--------|------|
 | getUserMedia | 53+ | 36+ | 11+ | 12+ |
-| MediaRecorder | 49+ | 25+ | 14.1+ | 79+ |
 | Web Speech API | 33+ | — | 14.1+ | 79+ |
 | Web Audio API | 35+ | 25+ | 14.1+ | 12+ |
-| Picture-in-Picture | 70+ | — | 14+ | 79+ |
-| Fullscreen API | 71+ | 64+ | 16.4+ | 79+ |
-| CSS backdrop-filter | 76+ | 103+ | 9+ | 17+ |
+| localStorage | 4+ | 3.5+ | 4+ | 12+ |
 
-> Speech recognition and PiP are not available in Firefox. The app degrades gracefully.
+> Speech recognition is not available in Firefox. The app will still work but won't generate audience reactions from your speech.
 
 ## Privacy
 
-- **Camera & microphone** are only accessed when you click Start Stream. No data leaves your browser.
-- **No analytics, cookies, or tracking** of any kind.
+- **Camera & mic** only accessed when you start practice. No data leaves your browser.
+- **No analytics, cookies, or tracking.**
 - **Speech recognition** uses your browser's built-in engine.
-- **Recordings and screenshots** are stored in memory and only saved to disk on your action.
-- **Sound effects** are synthesized locally via Web Audio API — no audio files loaded.
+- **Progress data** stored in localStorage on your device only.
 
 ## License
 

@@ -1,326 +1,270 @@
 /**
- * HypeCam — Unit & Integration Tests
- *
- * Run with: open test-runner.html in a browser
- * Framework-free minimal test harness.
+ * HypeComm — Unit Tests
+ * Open test-runner.html in a browser to run.
  */
 
 const results = { passed: 0, failed: 0, errors: [] };
 
 function assert(condition, message) {
-  if (condition) { results.passed += 1; }
+  if (condition) results.passed += 1;
   else { results.failed += 1; results.errors.push(message); console.error(`  FAIL: ${message}`); }
 }
-
 function assertEqual(actual, expected, message) {
   assert(actual === expected, `${message} — expected ${JSON.stringify(expected)}, got ${JSON.stringify(actual)}`);
 }
-
 function assertType(value, type, message) {
-  assert(typeof value === type, `${message} — expected type ${type}, got ${typeof value}`);
+  assert(typeof value === type, `${message} — expected ${type}, got ${typeof value}`);
 }
-
 function describe(name, fn) { console.log(`\n▸ ${name}`); fn(); }
-
 function it(name, fn) {
   try { fn(); console.log(`  ✓ ${name}`); }
   catch (err) { results.failed += 1; results.errors.push(`${name}: ${err.message}`); console.error(`  ✗ ${name}: ${err.message}`); }
 }
 
-/* ── Utility Tests ─────────────────────────────────────────── */
+/* ── Utilities ─────────────────────────────────────────────── */
 
 describe('choose()', () => {
-  it('returns an element from the array', () => {
-    const arr = [1, 2, 3, 4, 5];
-    assert(arr.includes(choose(arr)), 'Result not in array');
+  it('returns element from array', () => {
+    assert([1, 2, 3].includes(choose([1, 2, 3])), 'not in array');
   });
-  it('works with single-element arrays', () => {
-    assertEqual(choose([42]), 42, 'choose([42])');
-  });
-});
-
-describe('isoTime()', () => {
-  it('returns a string with colons', () => {
-    const time = isoTime();
-    assertType(time, 'string', 'return type');
-    assert(time.includes(':'), 'should contain colons');
-  });
-});
-
-describe('formatDuration()', () => {
-  it('formats zero', () => assertEqual(formatDuration(0), '00:00', '0ms'));
-  it('formats seconds', () => assertEqual(formatDuration(5000), '00:05', '5s'));
-  it('formats minutes:seconds', () => assertEqual(formatDuration(125000), '02:05', '2m5s'));
-  it('includes hours when >= 1h', () => assertEqual(formatDuration(3661000), '1:01:01', '1h1m1s'));
-  it('handles exact hour', () => assertEqual(formatDuration(3600000), '1:00:00', '1h'));
+  it('handles single element', () => assertEqual(choose([42]), 42, 'single'));
 });
 
 describe('clamp()', () => {
-  it('clamps below min', () => assertEqual(clamp(-5, 0, 100), 0, 'below min'));
-  it('clamps above max', () => assertEqual(clamp(150, 0, 100), 100, 'above max'));
-  it('passes through in range', () => assertEqual(clamp(50, 0, 100), 50, 'in range'));
-  it('handles equal min/max', () => assertEqual(clamp(5, 10, 10), 10, 'equal bounds'));
+  it('clamps below min', () => assertEqual(clamp(-5, 0, 100), 0, 'below'));
+  it('clamps above max', () => assertEqual(clamp(150, 0, 100), 100, 'above'));
+  it('passes through', () => assertEqual(clamp(50, 0, 100), 50, 'in range'));
+});
+
+describe('formatDuration()', () => {
+  it('formats zero', () => assertEqual(formatDuration(0), '00:00', '0'));
+  it('formats seconds', () => assertEqual(formatDuration(5000), '00:05', '5s'));
+  it('formats minutes', () => assertEqual(formatDuration(125000), '02:05', '2m5s'));
 });
 
 describe('friendlyMediaError()', () => {
-  it('handles NotAllowedError', () => {
-    const err = new DOMException('', 'NotAllowedError');
-    assert(friendlyMediaError(err).includes('denied'), 'Should mention denied');
-  });
-  it('handles NotFoundError', () => {
-    const err = new DOMException('', 'NotFoundError');
-    assert(friendlyMediaError(err).includes('No camera'), 'Should mention no camera');
-  });
-  it('handles NotReadableError', () => {
-    const err = new DOMException('', 'NotReadableError');
-    assert(friendlyMediaError(err).includes('already in use'), 'Should mention in use');
-  });
-  it('handles OverconstrainedError', () => {
-    const err = new DOMException('', 'OverconstrainedError');
-    assert(friendlyMediaError(err).includes('not support'), 'Should mention not supported');
-  });
-  it('handles unknown errors gracefully', () => {
-    assertType(friendlyMediaError(new Error('Unknown')), 'string', 'Returns string');
-  });
+  it('NotAllowedError', () => assert(friendlyMediaError(new DOMException('', 'NotAllowedError')).includes('denied'), 'denied'));
+  it('NotFoundError', () => assert(friendlyMediaError(new DOMException('', 'NotFoundError')).includes('No camera'), 'not found'));
+  it('unknown', () => assertType(friendlyMediaError(new Error('x')), 'string', 'string'));
 });
 
-/* ── Constants Validation ──────────────────────────────────── */
+/* ── Topic Database ────────────────────────────────────────── */
 
-describe('Constants: TIMING', () => {
-  it('has all required timing keys', () => {
-    const requiredKeys = [
-      'COMMENT_BASE_DELAY', 'COMMENT_STAGGER', 'COMMENT_JITTER',
-      'DEMO_INTERVAL', 'MIN_LATENCY_DISPLAY', 'COMMENT_BURST_MIN',
-      'HYPE_DECAY_INTERVAL', 'HYPE_DECAY_RATE', 'HYPE_PER_COMMENT', 'HYPE_MAX',
-      'CONFETTI_COUNT', 'CONFETTI_DURATION', 'TOAST_DURATION',
-      'VISUALIZER_FPS', 'SPARKLINE_POINTS', 'SPARKLINE_INTERVAL',
-    ];
-    requiredKeys.forEach((key) => {
-      assert(key in TIMING, `TIMING.${key} should exist`);
-      assertType(TIMING[key], 'number', `TIMING.${key}`);
+describe('TOPICS', () => {
+  it('has at least 5 categories', () => {
+    assert(Object.keys(TOPICS).length >= 5, `Has ${Object.keys(TOPICS).length} categories`);
+  });
+  it('each category has label, icon, topics array', () => {
+    Object.entries(TOPICS).forEach(([key, cat]) => {
+      assertType(cat.label, 'string', `${key}.label`);
+      assertType(cat.icon, 'string', `${key}.icon`);
+      assert(Array.isArray(cat.topics), `${key}.topics is array`);
+      assert(cat.topics.length >= 10, `${key} has ${cat.topics.length} topics (need ≥10)`);
     });
   });
 });
 
-describe('Constants: NAME_POOL', () => {
-  it('has at least 25 names', () => {
-    assert(NAME_POOL.length >= 25, `Has ${NAME_POOL.length} names`);
+describe('PRACTICE_MODES', () => {
+  it('has at least 4 modes', () => {
+    assert(Object.keys(PRACTICE_MODES).length >= 4, 'modes count');
   });
-  it('has no duplicates', () => {
-    const unique = new Set(NAME_POOL);
-    assertEqual(unique.size, NAME_POOL.length, 'All names unique');
-  });
-});
-
-describe('Constants: PERSONAS', () => {
-  it('every NAME_POOL entry has a persona', () => {
-    NAME_POOL.forEach((name) => {
-      assert(name in PERSONAS, `${name} should have a persona`);
+  it('each mode has label and duration', () => {
+    Object.entries(PRACTICE_MODES).forEach(([key, mode]) => {
+      assertType(mode.label, 'string', `${key}.label`);
+      assertType(mode.duration, 'number', `${key}.duration`);
     });
   });
-  it('personas have mood and style', () => {
-    Object.entries(PERSONAS).forEach(([name, p]) => {
-      assertType(p.mood, 'string', `${name}.mood`);
-      assertType(p.style, 'string', `${name}.style`);
-    });
+  it('free mode has 0 duration', () => {
+    assertEqual(PRACTICE_MODES.free.duration, 0, 'free duration');
   });
 });
 
-describe('Constants: VIDEO_FILTERS', () => {
-  it('has at least 5 filters', () => {
-    assert(Object.keys(VIDEO_FILTERS).length >= 5, 'At least 5 filters');
+describe('FILLER_WORDS', () => {
+  it('has common fillers', () => {
+    assert(FILLER_WORDS.includes('um'), 'um');
+    assert(FILLER_WORDS.includes('uh'), 'uh');
+    assert(FILLER_WORDS.includes('like'), 'like');
+    assert(FILLER_WORDS.includes('you know'), 'you know');
   });
-  it('includes "none" filter', () => {
-    assert('none' in VIDEO_FILTERS, 'none filter exists');
-    assertEqual(VIDEO_FILTERS.none.css, 'none', 'none filter css');
-  });
-  it('all filters have label and css', () => {
-    Object.entries(VIDEO_FILTERS).forEach(([key, f]) => {
-      assertType(f.label, 'string', `${key}.label`);
-      assertType(f.css, 'string', `${key}.css`);
-    });
+  it('has at least 15 entries', () => {
+    assert(FILLER_WORDS.length >= 15, `${FILLER_WORDS.length} fillers`);
   });
 });
 
-describe('Constants: MILESTONES', () => {
-  it('has milestones in ascending order', () => {
-    for (let i = 1; i < MILESTONES.length; i++) {
-      assert(MILESTONES[i].count > MILESTONES[i - 1].count,
-        `Milestone ${i} should be > milestone ${i - 1}`);
-    }
+/* ── SpeechAnalyzer ────────────────────────────────────────── */
+
+describe('SpeechAnalyzer', () => {
+  it('starts with zero state', () => {
+    const a = new SpeechAnalyzer();
+    assertEqual(a.totalWords, 0, 'totalWords');
+    assertEqual(a.pauseCount, 0, 'pauseCount');
+    assertEqual(Object.keys(a.fillerCounts).length, 0, 'fillerCounts');
   });
-  it('all milestones have count, message, emoji', () => {
-    MILESTONES.forEach((ms, i) => {
-      assertType(ms.count, 'number', `milestone[${i}].count`);
-      assertType(ms.message, 'string', `milestone[${i}].message`);
-      assertType(ms.emoji, 'string', `milestone[${i}].emoji`);
-    });
+
+  it('counts words correctly', () => {
+    const a = new SpeechAnalyzer();
+    a.start();
+    a.addTranscript('hello world this is a test');
+    assertEqual(a.totalWords, 6, '6 words');
+  });
+
+  it('detects filler words', () => {
+    const a = new SpeechAnalyzer();
+    a.start();
+    a.addTranscript('um I think um this is like really um important');
+    assert(a.fillerCounts['um'] === 3, `um count: ${a.fillerCounts['um']}`);
+    assert(a.fillerCounts['like'] === 1, `like count: ${a.fillerCounts['like']}`);
+  });
+
+  it('generates a report', () => {
+    const a = new SpeechAnalyzer();
+    a.start();
+    a.addTranscript('This is a test sentence with several words');
+    const report = a.getReport();
+    assertType(report.totalWords, 'number', 'totalWords');
+    assertType(report.wpm, 'number', 'wpm');
+    assertType(report.overallScore, 'number', 'overallScore');
+    assertType(report.paceScore, 'number', 'paceScore');
+    assertType(report.fillerScore, 'number', 'fillerScore');
+    assertType(report.fluencyScore, 'number', 'fluencyScore');
+    assert(report.overallScore >= 0 && report.overallScore <= 100, 'score in range');
+  });
+
+  it('gives 100 filler score when no fillers', () => {
+    const a = new SpeechAnalyzer();
+    a.start();
+    a.addTranscript('The quick brown fox jumps over the lazy dog');
+    const report = a.getReport();
+    assertEqual(report.fillerScore, 100, 'no fillers = 100');
+    assertEqual(report.totalFillers, 0, 'zero fillers');
+  });
+
+  it('reset clears all state', () => {
+    const a = new SpeechAnalyzer();
+    a.start();
+    a.addTranscript('um hello um world');
+    a.reset();
+    assertEqual(a.totalWords, 0, 'words reset');
+    assertEqual(Object.keys(a.fillerCounts).length, 0, 'fillers reset');
+  });
+
+  it('builds full transcript', () => {
+    const a = new SpeechAnalyzer();
+    a.start();
+    a.addTranscript('first part');
+    a.addTranscript('second part');
+    const report = a.getReport();
+    assertEqual(report.fullTranscript, 'first part second part', 'transcript concatenated');
   });
 });
 
-describe('Constants: EMOJI_REACTIONS & DEMO_TOPICS', () => {
-  it('EMOJI_REACTIONS non-empty', () => assert(EMOJI_REACTIONS.length > 0, 'has emojis'));
-  it('DEMO_TOPICS non-empty', () => assert(DEMO_TOPICS.length > 0, 'has topics'));
-});
+/* ── AudienceEngine ────────────────────────────────────────── */
 
-/* ── CommentEngine v2 Tests ────────────────────────────────── */
-
-describe('CommentEngine', () => {
-  it('returns null for empty transcript', () => {
-    const e = new CommentEngine();
-    assertEqual(e.generate(''), null, 'empty string');
-    assertEqual(e.generate('   '), null, 'whitespace');
+describe('AudienceEngine', () => {
+  it('returns null for empty input', () => {
+    const e = new AudienceEngine();
+    assertEqual(e.generate('', 'impromptu'), null, 'empty');
+    assertEqual(e.generate('   ', 'debate'), null, 'whitespace');
   });
 
-  it('returns {username, text} for valid input', () => {
-    const e = new CommentEngine();
-    const result = e.generate('testing');
-    assertType(result, 'object', 'result type');
-    assertType(result.username, 'string', 'username type');
-    assertType(result.text, 'string', 'text type');
+  it('returns username and text', () => {
+    const e = new AudienceEngine();
+    const result = e.generate('test topic', 'persuasion');
+    assertType(result.username, 'string', 'username');
+    assertType(result.text, 'string', 'text');
     assert(result.text.length > 0, 'text not empty');
   });
 
-  it('uses names from NAME_POOL', () => {
-    const e = new CommentEngine();
-    const result = e.generate('sample');
-    assert(NAME_POOL.includes(result.username), 'username from pool');
+  it('uses names from AUDIENCE_NAMES', () => {
+    const e = new AudienceEngine();
+    const result = e.generate('topic', 'impromptu');
+    assert(AUDIENCE_NAMES.includes(result.username), 'name from pool');
   });
 
   it('tracks recent topics', () => {
-    const e = new CommentEngine();
-    e.generate('alpha');
-    e.generate('beta');
-    assertEqual(e.recentTopics.length, 2, 'two topics tracked');
+    const e = new AudienceEngine();
+    e.generate('alpha', 'debate');
+    e.generate('beta', 'debate');
+    assertEqual(e.recentTopics.length, 2, 'tracked');
   });
 
-  it('caps recent topics at 10', () => {
-    const e = new CommentEngine();
-    for (let i = 0; i < 15; i++) e.generate(`topic ${i}`);
-    assertEqual(e.recentTopics.length, 10, 'capped at 10');
-  });
-
-  it('tracks conversation threads', () => {
-    const e = new CommentEngine();
-    e.generate('first');
-    e.generate('second');
-    assertEqual(e.conversationThreads.length, 2, 'two threads');
-    assertType(e.conversationThreads[0].username, 'string', 'thread username');
-  });
-
-  it('caps conversation threads at 20', () => {
-    const e = new CommentEngine();
-    for (let i = 0; i < 25; i++) e.generate(`topic ${i}`);
-    assertEqual(e.conversationThreads.length, 20, 'capped at 20');
-  });
-
-  it('generates varied output across many calls', () => {
-    const e = new CommentEngine();
-    const texts = new Set();
-    for (let i = 0; i < 30; i++) {
-      const result = e.generate('creativity');
-      if (result) texts.add(result.text);
-    }
-    assert(texts.size > 5, `Should have variety — got ${texts.size} unique comments`);
+  it('caps recent topics at 8', () => {
+    const e = new AudienceEngine();
+    for (let i = 0; i < 12; i++) e.generate(`topic ${i}`, 'impromptu');
+    assertEqual(e.recentTopics.length, 8, 'capped');
   });
 });
 
-/* ── SoundEngine Tests ─────────────────────────────────────── */
+/* ── SoundEngine ───────────────────────────────────────────── */
 
 describe('SoundEngine', () => {
-  it('can be constructed', () => {
+  it('has all methods', () => {
     const s = new SoundEngine();
-    assertType(s, 'object', 'SoundEngine instance');
-  });
-  it('has all sound methods', () => {
-    const s = new SoundEngine();
-    ['comment', 'goLive', 'endStream', 'milestone', 'screenshot', 'emoji'].forEach((method) => {
-      assertType(s[method], 'function', `SoundEngine.${method}`);
+    ['start', 'countdownBeep', 'countdownFinal', 'complete', 'comment'].forEach((m) => {
+      assertType(s[m], 'function', m);
     });
   });
 });
 
-/* ── AudioVisualizer Tests ─────────────────────────────────── */
+/* ── ProgressStore ─────────────────────────────────────────── */
 
-describe('AudioVisualizer', () => {
-  it('can be constructed with canvas element', () => {
-    const canvas = document.createElement('canvas');
-    const v = new AudioVisualizer(canvas);
-    assertType(v, 'object', 'AudioVisualizer instance');
-    assertEqual(v.analyser, null, 'analyser starts null');
+describe('ProgressStore', () => {
+  it('returns default progress', () => {
+    const store = new ProgressStore();
+    // Use a unique key to avoid conflicts
+    store.key = 'hypecomm_test_' + Date.now();
+    const data = store.getProgress();
+    assertEqual(data.totalSessions, 0, 'zero sessions');
+    assertEqual(data.currentStreak, 0, 'zero streak');
   });
-  it('stop() clears state', () => {
-    const canvas = document.createElement('canvas');
-    const v = new AudioVisualizer(canvas);
-    v.stop();
-    assertEqual(v.analyser, null, 'analyser is null after stop');
+
+  it('addSession increments totalSessions', () => {
+    const store = new ProgressStore();
+    store.key = 'hypecomm_test_' + Date.now();
+    const report = { duration: 60, totalWords: 100, wpm: 120, fillerRate: 3, overallScore: 75, paceScore: 80, fillerScore: 70, fluencyScore: 75 };
+    const data = store.addSession(report, 'impromptu', 'short');
+    assertEqual(data.totalSessions, 1, 'one session');
+    assert(data.sessions.length === 1, 'session saved');
+    // Cleanup
+    localStorage.removeItem(store.key);
+  });
+
+  it('tracks personal bests', () => {
+    const store = new ProgressStore();
+    store.key = 'hypecomm_test_' + Date.now();
+    store.addSession({ duration: 60, totalWords: 100, wpm: 120, fillerRate: 5, overallScore: 70, paceScore: 80, fillerScore: 60, fluencyScore: 70 }, 'debate', 'medium');
+    store.addSession({ duration: 60, totalWords: 150, wpm: 150, fillerRate: 2, overallScore: 90, paceScore: 95, fillerScore: 90, fluencyScore: 85 }, 'debate', 'medium');
+    const data = store.getProgress();
+    assertEqual(data.personalBests.overallScore, 90, 'best score');
+    assertEqual(data.personalBests.wpm, 150, 'best wpm');
+    assertEqual(data.personalBests.lowestFillerRate, 2, 'best filler rate');
+    localStorage.removeItem(store.key);
   });
 });
 
-/* ── ConfettiEngine Tests ──────────────────────────────────── */
-
-describe('ConfettiEngine', () => {
-  it('can be constructed', () => {
-    const container = document.createElement('div');
-    const c = new ConfettiEngine(container);
-    assertType(c, 'object', 'ConfettiEngine instance');
-  });
-  it('burst creates confetti elements', () => {
-    const container = document.createElement('div');
-    const c = new ConfettiEngine(container);
-    c.burst();
-    assert(container.children.length > 0, 'Should create confetti pieces');
-    assert(container.children.length <= TIMING.CONFETTI_COUNT, 'Should not exceed count');
-  });
-});
-
-/* ── ToastManager Tests ────────────────────────────────────── */
+/* ── ToastManager ──────────────────────────────────────────── */
 
 describe('ToastManager', () => {
-  it('can be constructed', () => {
+  it('creates toast element', () => {
     const container = document.createElement('div');
     const t = new ToastManager(container);
-    assertType(t, 'object', 'ToastManager instance');
-  });
-  it('show() creates a toast element', () => {
-    const container = document.createElement('div');
-    const t = new ToastManager(container);
-    t.show('Hello', 'info');
-    assertEqual(container.children.length, 1, 'One toast created');
-    assert(container.children[0].textContent === 'Hello', 'Toast has correct text');
-    assert(container.children[0].classList.contains('toast-info'), 'Has type class');
+    t.show('Test', 'success');
+    assertEqual(container.children.length, 1, 'one toast');
+    assert(container.children[0].classList.contains('toast-success'), 'success class');
   });
 });
 
-/* ── Sparkline Tests ───────────────────────────────────────── */
+/* ── AudioVisualizer ───────────────────────────────────────── */
 
-describe('Sparkline', () => {
-  it('can be constructed', () => {
-    const canvas = document.createElement('canvas');
-    const s = new Sparkline(canvas);
-    assertType(s, 'object', 'Sparkline instance');
-    assertEqual(s.points.length, 0, 'Starts empty');
+describe('AudioVisualizer', () => {
+  it('constructs with null analyser', () => {
+    const v = new AudioVisualizer(document.createElement('canvas'));
+    assertEqual(v.analyser, null, 'null');
   });
-  it('push adds points', () => {
-    const canvas = document.createElement('canvas');
-    const s = new Sparkline(canvas);
-    s.push(10);
-    s.push(20);
-    assertEqual(s.points.length, 2, 'Two points');
-  });
-  it('caps points at SPARKLINE_POINTS', () => {
-    const canvas = document.createElement('canvas');
-    const s = new Sparkline(canvas);
-    for (let i = 0; i < TIMING.SPARKLINE_POINTS + 10; i++) s.push(i);
-    assertEqual(s.points.length, TIMING.SPARKLINE_POINTS, 'Capped at max');
-  });
-  it('clear() resets points', () => {
-    const canvas = document.createElement('canvas');
-    const s = new Sparkline(canvas);
-    s.push(1);
-    s.push(2);
-    s.clear();
-    assertEqual(s.points.length, 0, 'Points cleared');
+  it('stop clears state', () => {
+    const v = new AudioVisualizer(document.createElement('canvas'));
+    v.stop();
+    assertEqual(v.analyser, null, 'null after stop');
   });
 });
 

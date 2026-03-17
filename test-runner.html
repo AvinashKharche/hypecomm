@@ -2,29 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>HypeCam Tests</title>
+  <title>HypeComm Tests</title>
   <style>
-    body { font-family: monospace; background: #1a1a2e; color: #e0e0e0; padding: 24px; }
-    h1 { color: #7affcf; margin-bottom: 8px; }
-    p.sub { color: #8ba0b8; margin-top: 0; }
+    body { font-family: monospace; background: #0f0f1a; color: #e0e0e0; padding: 24px; }
+    h1 { color: #818cf8; margin-bottom: 4px; }
+    p.sub { color: #94a3b8; margin-top: 0; }
     pre { white-space: pre-wrap; line-height: 1.6; font-size: 13px; }
   </style>
 </head>
 <body>
-  <h1>HypeCam Test Runner</h1>
-  <p class="sub">Framework-free unit &amp; integration tests</p>
+  <h1>HypeComm Test Runner</h1>
+  <p class="sub">Communication skills practice tool — unit tests</p>
   <pre id="output">Running tests...</pre>
 
-  <!-- Minimal DOM stubs so app.js can initialize -->
+  <!-- DOM stubs for app.js initialization -->
   <div hidden>
-    <button id="startBtn"></button>
+    <div id="topicGrid"></div>
+    <div id="modeGrid"></div>
+    <div id="topicDisplay" hidden></div>
+    <p id="topicText"></p>
+    <p id="topicCategory"></p>
+    <button id="startBtn" disabled></button>
     <button id="stopBtn" disabled></button>
-    <a id="downloadBtn" disabled></a>
+    <button id="newTopicBtn"></button>
+    <div id="timerDisplay"></div>
+    <div id="timerBar"><div id="timerBarFill"></div></div>
     <video id="preview"></video>
-    <div id="liveBadge"></div>
-    <span id="statusLabel"></span>
-    <span id="latencyLabel"></span>
-    <span id="commentCount"></span>
+    <canvas id="visualizerCanvas"></canvas>
     <div id="commentStream"></div>
     <template id="commentTemplate">
       <article class="comment">
@@ -32,34 +36,24 @@
         <div><div class="meta"><span class="username"></span><span class="timestamp"></span></div><p class="body"></p></div>
       </article>
     </template>
-    <div id="speechHint"></div>
-    <span id="streamTimer"></span>
-    <span id="viewerCount"></span>
-    <div id="typingIndicator" hidden></div>
-    <div id="emojiBar"></div>
-    <canvas id="visualizerCanvas"></canvas>
-    <div id="hypeMeter"></div>
-    <div id="hypeFill"></div>
-    <span id="hypeLabel"></span>
-    <div id="filterBar"></div>
-    <button id="highlightBtn" disabled></button>
-    <div id="highlightsList"></div>
-    <input id="chatInput" />
-    <button id="chatSendBtn"></button>
-    <div id="moodIndicator"></div>
-    <span id="moodLabel"></span>
-    <span id="moodIcon"></span>
-    <button id="pipBtn" disabled></button>
-    <button id="fullscreenBtn" disabled></button>
-    <button id="screenshotBtn" disabled></button>
-    <button id="soundToggle"></button>
+    <span id="commentCount"></span>
+    <div id="engagementFill"></div>
+    <span id="engagementLabel"></span>
+    <span id="speechStatus"></span>
+    <span id="statusLabel"></span>
     <div id="toastContainer"></div>
-    <div id="confettiLayer"></div>
-    <div id="recapModal" hidden></div>
-    <div id="recapContent"></div>
-    <button id="recapClose"></button>
-    <canvas id="sparklineCanvas"></canvas>
-    <div id="videoOverlay"></div>
+    <button id="soundToggle"></button>
+    <div id="feedbackModal" hidden></div>
+    <div id="feedbackContent"></div>
+    <button id="feedbackClose"></button>
+    <button id="feedbackPracticeAgain"></button>
+    <div id="progressPanel"></div>
+    <span id="totalSessions"></span>
+    <span id="currentStreak"></span>
+    <span id="bestScore"></span>
+    <div id="recentScores"></div>
+    <div id="setupPhase"></div>
+    <div id="practicePhase" hidden></div>
   </div>
 
   <script>

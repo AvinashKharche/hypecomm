@@ -1,138 +1,195 @@
 /* ══════════════════════════════════════════════════════════════════
-   HypeCam — State-of-the-Art Glitch-Pop Live Studio
+   HypeComm — Communication Skills Practice Tool
+   Speak. Get feedback. Improve.
    ══════════════════════════════════════════════════════════════════ */
 
-/* ── Constants ─────────────────────────────────────────────────── */
+/* ── Topic Database ────────────────────────────────────────────── */
 
-const TIMING = {
-  COMMENT_BASE_DELAY: 300,
-  COMMENT_STAGGER: 400,
-  COMMENT_JITTER: 200,
-  DEMO_INTERVAL: 3500,
-  MIN_LATENCY_DISPLAY: 40,
-  COMMENT_BURST_MIN: 3,
-  COMMENT_BURST_EXTRA: 3,
-  TIMER_INTERVAL: 1000,
-  VIEWER_UPDATE_INTERVAL: 3000,
-  VIEWER_BASE: 42,
-  VIEWER_RANGE: 80,
-  VIEWER_DRIFT: 8,
-  TYPING_INDICATOR_DURATION: 1800,
-  URL_REVOKE_DELAY: 2000,
-  AUTOSCROLL_THRESHOLD: 50,
-  MEDIA_RECORDER_TIMESLICE: 200,
-  HYPE_DECAY_INTERVAL: 500,
-  HYPE_DECAY_RATE: 2,
-  HYPE_PER_COMMENT: 8,
-  HYPE_MAX: 100,
-  MILESTONE_CHECK_INTERVAL: 1000,
-  CONFETTI_COUNT: 60,
-  CONFETTI_DURATION: 3000,
-  TOAST_DURATION: 4000,
-  VISUALIZER_FPS: 30,
-  SOUND_VOLUME: 0.15,
-  SPARKLINE_POINTS: 20,
-  SPARKLINE_INTERVAL: 2000,
+const TOPICS = {
+  impromptu: {
+    label: 'Impromptu',
+    icon: '💬',
+    description: 'Think on your feet — no prep time',
+    topics: [
+      'The most underrated skill in life',
+      'Why boredom is actually good for you',
+      'A technology that changed your daily routine',
+      'If you could have dinner with anyone, who and why',
+      'The biggest lesson you learned from a mistake',
+      'Something everyone should try at least once',
+      'Why first impressions are overrated',
+      'A place that changed how you see the world',
+      'The difference between being busy and being productive',
+      'Why failure is a better teacher than success',
+      'Something you believed as a child that turned out to be wrong',
+      'The best advice you ever ignored',
+      'A small change that made a big difference in your life',
+      'Why people resist change even when it benefits them',
+      'The role of luck vs hard work in success',
+    ],
+  },
+  persuasion: {
+    label: 'Persuasion',
+    icon: '🎯',
+    description: 'Make your case — convince the audience',
+    topics: [
+      'Remote work is better than office work',
+      'Schools should teach financial literacy before calculus',
+      'Social media does more harm than good',
+      'Everyone should learn to code',
+      'Physical books are better than e-books',
+      'Public speaking should be required in every school',
+      'AI will create more jobs than it destroys',
+      'Failure should be celebrated, not stigmatized',
+      'Voting should be mandatory',
+      'The four-day work week should be standard',
+      'Handwriting is a dying skill worth saving',
+      'Gap years should be encouraged before college',
+      'Creativity is more important than knowledge',
+      'We should explore space instead of the ocean',
+      'Minimum wage should be a living wage',
+    ],
+  },
+  storytelling: {
+    label: 'Storytelling',
+    icon: '📖',
+    description: 'Captivate with a narrative arc',
+    topics: [
+      'Tell a story about a time you overcame a fear',
+      'Describe a moment that completely changed your perspective',
+      'Tell the story of your most embarrassing moment',
+      'Narrate a time when a stranger made your day',
+      'Tell a story about the best decision you ever made',
+      'Describe a moment when you felt truly proud of yourself',
+      'Tell a story about a time you helped someone unexpectedly',
+      'Narrate your experience learning something difficult',
+      'Tell the story of a friendship that shaped who you are',
+      'Describe a time when things didn\'t go as planned but worked out',
+      'Tell a story about a risk that paid off',
+      'Narrate a moment when you stood up for something you believed in',
+      'Tell the story of your favorite childhood memory',
+      'Describe a time you had to make a tough choice quickly',
+      'Tell a story about a lesson you learned the hard way',
+    ],
+  },
+  elevator: {
+    label: 'Elevator Pitch',
+    icon: '🚀',
+    description: 'Sell your idea in 30–60 seconds',
+    topics: [
+      'Pitch an app that helps people manage their time better',
+      'Pitch yourself for your dream job in 30 seconds',
+      'Pitch a startup that solves a problem you face daily',
+      'Sell the idea of learning a new language to a skeptic',
+      'Pitch a community project that would improve your neighborhood',
+      'Sell the concept of mentorship to a busy executive',
+      'Pitch a product that makes cooking easier for beginners',
+      'Pitch why someone should read your favorite book',
+      'Sell the idea of a digital detox weekend retreat',
+      'Pitch a subscription box for learning new skills',
+      'Sell the importance of sleep to a workaholic',
+      'Pitch a tool that helps introverts network more easily',
+    ],
+  },
+  debate: {
+    label: 'Debate',
+    icon: '⚔️',
+    description: 'Argue both sides — strengthen your logic',
+    topics: [
+      'Is it better to be a specialist or a generalist?',
+      'Should college education be free for everyone?',
+      'Is social media connecting or isolating us?',
+      'Should companies be allowed to monitor employee activity?',
+      'Is it ethical to use AI to write essays and reports?',
+      'Should there be limits on free speech online?',
+      'Is competition or collaboration more effective?',
+      'Should self-driving cars prioritize passengers or pedestrians?',
+      'Is privacy more important than security?',
+      'Should parents limit children\'s screen time?',
+      'Is it better to save money or invest it?',
+      'Should art be funded by the government?',
+    ],
+  },
+  explanation: {
+    label: 'Explain It',
+    icon: '🧠',
+    description: 'Break down a complex idea simply',
+    topics: [
+      'Explain how the internet works to a 10-year-old',
+      'Explain why the sky is blue in an engaging way',
+      'Explain the concept of inflation to someone who\'s never heard of it',
+      'Explain how a search engine decides what to show you',
+      'Explain why we dream',
+      'Explain how vaccines work without using jargon',
+      'Explain the concept of compound interest to a teenager',
+      'Explain how electricity reaches your home',
+      'Explain why time seems to move faster as you get older',
+      'Explain the difference between weather and climate',
+      'Explain how a habit forms in your brain',
+      'Explain why some songs get stuck in your head',
+    ],
+  },
 };
 
-const NAME_POOL = [
+const PRACTICE_MODES = {
+  quick:   { label: 'Quick Fire',    duration: 30,  icon: '⚡' },
+  short:   { label: 'Short Talk',    duration: 60,  icon: '💬' },
+  medium:  { label: 'Presentation',  duration: 120, icon: '🎤' },
+  long:    { label: 'Deep Dive',     duration: 300, icon: '🎯' },
+  free:    { label: 'Free Practice', duration: 0,   icon: '♾️' },
+};
+
+const FILLER_WORDS = ['um', 'uh', 'uhh', 'umm', 'like', 'you know', 'basically',
+  'actually', 'literally', 'so', 'right', 'i mean', 'kind of', 'sort of',
+  'you see', 'well', 'okay so', 'honestly'];
+
+const AUDIENCE_NAMES = [
   'NovaKicks', 'SkylineSam', 'PixelChaser', 'GlowEcho', 'CrispQuill',
   'AtlasWave', 'NeonDusk', 'SonicJun', 'EchoRin', 'VelvetArc',
   'CircuitMuse', 'MaruBytes', 'SiaLoops', 'HelixRay', 'LumenFox',
   'MintyRae', 'OrbitBlue', 'FableAsh', 'VioletRue', 'KairoD',
-  'RheaNova', 'ByteBloom', 'ZenithRay', 'CosmicLu', 'DriftSol',
-  'PrismJay', 'AuroraKai', 'CypherEv', 'QuantaRose', 'VoxelMint',
 ];
 
-const PERSONAS = {
-  NovaKicks: { mood: 'hype', style: 'exclamation' },
-  SkylineSam: { mood: 'chill', style: 'thoughtful' },
-  PixelChaser: { mood: 'curious', style: 'question' },
-  GlowEcho: { mood: 'hype', style: 'emoji-heavy' },
-  CrispQuill: { mood: 'analytical', style: 'detailed' },
-  AtlasWave: { mood: 'supportive', style: 'encouraging' },
-  NeonDusk: { mood: 'hype', style: 'slang' },
-  SonicJun: { mood: 'curious', style: 'technical' },
-  EchoRin: { mood: 'chill', style: 'poetic' },
-  VelvetArc: { mood: 'supportive', style: 'warm' },
-  CircuitMuse: { mood: 'analytical', style: 'technical' },
-  MaruBytes: { mood: 'hype', style: 'meme' },
-  SiaLoops: { mood: 'chill', style: 'musical' },
-  HelixRay: { mood: 'curious', style: 'scientific' },
-  LumenFox: { mood: 'hype', style: 'exclamation' },
-  MintyRae: { mood: 'supportive', style: 'warm' },
-  OrbitBlue: { mood: 'analytical', style: 'thoughtful' },
-  FableAsh: { mood: 'chill', style: 'poetic' },
-  VioletRue: { mood: 'curious', style: 'question' },
-  KairoD: { mood: 'hype', style: 'slang' },
-  RheaNova: { mood: 'supportive', style: 'encouraging' },
-  ByteBloom: { mood: 'analytical', style: 'technical' },
-  ZenithRay: { mood: 'hype', style: 'exclamation' },
-  CosmicLu: { mood: 'chill', style: 'musical' },
-  DriftSol: { mood: 'curious', style: 'thoughtful' },
-  PrismJay: { mood: 'hype', style: 'emoji-heavy' },
-  AuroraKai: { mood: 'supportive', style: 'warm' },
-  CypherEv: { mood: 'analytical', style: 'technical' },
-  QuantaRose: { mood: 'curious', style: 'scientific' },
-  VoxelMint: { mood: 'chill', style: 'poetic' },
+const TIMING = {
+  COMMENT_BASE_DELAY: 400,
+  COMMENT_STAGGER: 500,
+  COMMENT_JITTER: 300,
+  COMMENT_BURST_MIN: 2,
+  COMMENT_BURST_EXTRA: 2,
+  ENGAGEMENT_DECAY_INTERVAL: 800,
+  ENGAGEMENT_DECAY_RATE: 1.5,
+  ENGAGEMENT_PER_COMMENT: 6,
+  ENGAGEMENT_MAX: 100,
+  TOAST_DURATION: 4000,
+  COUNTDOWN_BEEP_START: 5,
 };
-
-const EMOJI_REACTIONS = ['🔥', '💜', '👏', '✨', '💯', '🎯', '⚡', '🚀'];
-
-const DEMO_TOPICS = [
-  'sound design', 'your setup', 'story arc', 'camera confidence',
-  'favorite glitch effect', 'workflow tricks', 'color grading',
-  'audio mixing', 'live performance tips', 'visual storytelling',
-];
-
-const VIDEO_FILTERS = {
-  none: { label: 'Normal', css: 'none' },
-  glitch: { label: 'Glitch', css: 'hue-rotate(90deg) saturate(2) contrast(1.4)' },
-  vhs: { label: 'VHS', css: 'sepia(0.3) contrast(1.1) brightness(0.9) saturate(1.3)' },
-  neon: { label: 'Neon', css: 'saturate(3) contrast(1.2) brightness(1.1)' },
-  noir: { label: 'Noir', css: 'grayscale(1) contrast(1.4) brightness(0.8)' },
-  thermal: { label: 'Thermal', css: 'hue-rotate(180deg) saturate(4) contrast(1.6)' },
-};
-
-const MILESTONES = [
-  { count: 10, message: '10 comments! The crowd is warming up', emoji: '🎉' },
-  { count: 25, message: '25 comments! Energy is rising', emoji: '⚡' },
-  { count: 50, message: '50 comments! This stream is on fire', emoji: '🔥' },
-  { count: 100, message: '100 comments! Legendary stream', emoji: '🏆' },
-  { count: 200, message: '200 comments! Hall of fame moment', emoji: '👑' },
-  { count: 500, message: '500 comments! Unprecedented hype', emoji: '💎' },
-];
 
 const ERROR_MESSAGES = {
-  PERMISSION_DENIED: 'Camera or mic permission was denied. Please allow access and try again.',
-  NOT_FOUND: 'No camera or microphone found. Please connect a device and try again.',
-  NOT_READABLE: 'Camera or mic is already in use by another app. Close it and retry.',
-  OVERCONSTRAINED: 'Your camera does not support the requested settings.',
-  GENERIC_MEDIA: 'Could not access camera or microphone. Check your browser settings.',
-  SPEECH_UNAVAILABLE: 'Speech recognition not available in this browser. Comments will riff off sample prompts.',
-  SPEECH_LOST: 'Speech recognition lost — retrying automatically...',
-  SPEECH_DENIED: 'Microphone access denied for speech recognition. Comments will use sample prompts.',
+  PERMISSION_DENIED: 'Camera or mic permission denied. Please allow access and try again.',
+  NOT_FOUND: 'No camera or microphone found. Please connect a device.',
+  NOT_READABLE: 'Camera or mic is in use by another app.',
+  OVERCONSTRAINED: 'Camera does not support the requested settings.',
+  GENERIC_MEDIA: 'Could not access camera or microphone.',
+  SPEECH_UNAVAILABLE: 'Speech recognition not available in this browser.',
+  SPEECH_LOST: 'Speech recognition interrupted — retrying...',
+  SPEECH_DENIED: 'Microphone access denied for speech recognition.',
 };
 
 /* ── Utilities ─────────────────────────────────────────────────── */
 
-function choose(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
+function choose(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
 
 function isoTime() {
-  return new Intl.DateTimeFormat([], {
-    hour: '2-digit', minute: '2-digit', second: '2-digit',
-  }).format(new Date());
+  return new Intl.DateTimeFormat([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date());
 }
 
 function formatDuration(ms) {
   const s = Math.floor(ms / 1000);
-  const h = Math.floor(s / 3600);
-  const m = Math.floor((s % 3600) / 60);
+  const m = Math.floor(s / 60);
   const sec = s % 60;
   const pad = (n) => String(n).padStart(2, '0');
-  return h > 0 ? `${h}:${pad(m)}:${pad(sec)}` : `${pad(m)}:${pad(sec)}`;
+  return `${pad(m)}:${pad(sec)}`;
 }
 
 function friendlyMediaError(err) {
@@ -143,47 +200,243 @@ function friendlyMediaError(err) {
   return ERROR_MESSAGES.GENERIC_MEDIA;
 }
 
-function clamp(val, min, max) {
-  return Math.max(min, Math.min(max, val));
-}
+/* ── Speech Analyzer ───────────────────────────────────────────── */
 
-/* ── Sound Engine (Web Audio API) ──────────────────────────────── */
-
-class SoundEngine {
+class SpeechAnalyzer {
   constructor() {
-    this._ctx = null;
+    this.reset();
   }
 
-  _ensureContext() {
-    if (!this._ctx) {
-      this._ctx = new (window.AudioContext || window.webkitAudioContext)();
+  reset() {
+    this.transcripts = [];
+    this.wordTimestamps = [];
+    this.fillerCounts = {};
+    this.totalWords = 0;
+    this.startTime = null;
+    this.pauseCount = 0;
+    this.lastSpeechTime = null;
+    this.longestPause = 0;
+  }
+
+  start() {
+    this.reset();
+    this.startTime = performance.now();
+    this.lastSpeechTime = this.startTime;
+  }
+
+  addTranscript(text) {
+    const now = performance.now();
+    if (this.lastSpeechTime) {
+      const gap = now - this.lastSpeechTime;
+      if (gap > 2000) {
+        this.pauseCount += 1;
+        if (gap > this.longestPause) this.longestPause = gap;
+      }
     }
+    this.lastSpeechTime = now;
+    this.transcripts.push({ text, time: now });
+
+    const words = text.toLowerCase().split(/\s+/).filter(Boolean);
+    this.totalWords += words.length;
+    this.wordTimestamps.push({ count: words.length, time: now });
+
+    // Count filler words
+    const joined = text.toLowerCase();
+    for (const filler of FILLER_WORDS) {
+      const regex = new RegExp(`\\b${filler}\\b`, 'gi');
+      const matches = joined.match(regex);
+      if (matches) {
+        this.fillerCounts[filler] = (this.fillerCounts[filler] || 0) + matches.length;
+      }
+    }
+  }
+
+  getReport() {
+    const elapsed = this.startTime ? (performance.now() - this.startTime) / 1000 : 0;
+    const minutes = elapsed / 60;
+    const wpm = minutes > 0 ? Math.round(this.totalWords / minutes) : 0;
+    const totalFillers = Object.values(this.fillerCounts).reduce((a, b) => a + b, 0);
+    const fillerRate = this.totalWords > 0
+      ? Math.round((totalFillers / this.totalWords) * 100)
+      : 0;
+
+    // Score calculations (0-100 each)
+    const paceScore = this._scorePace(wpm);
+    const fillerScore = this._scoreFillers(fillerRate);
+    const fluencyScore = this._scoreFluency();
+    const overallScore = Math.round((paceScore + fillerScore + fluencyScore) / 3);
+
+    // Sort fillers by count descending
+    const topFillers = Object.entries(this.fillerCounts)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    return {
+      duration: Math.round(elapsed),
+      totalWords: this.totalWords,
+      wpm,
+      totalFillers,
+      fillerRate,
+      topFillers,
+      pauseCount: this.pauseCount,
+      longestPause: Math.round(this.longestPause / 1000),
+      paceScore,
+      fillerScore,
+      fluencyScore,
+      overallScore,
+      fullTranscript: this.transcripts.map((t) => t.text).join(' '),
+    };
+  }
+
+  _scorePace(wpm) {
+    // Ideal: 130-160 WPM. Penalize < 100 or > 180
+    if (wpm === 0) return 0;
+    if (wpm >= 130 && wpm <= 160) return 100;
+    if (wpm >= 110 && wpm <= 180) return 80;
+    if (wpm >= 90 && wpm <= 200) return 60;
+    return 40;
+  }
+
+  _scoreFillers(fillerRate) {
+    // 0% fillers = 100, >10% = 30
+    if (fillerRate === 0) return 100;
+    if (fillerRate <= 2) return 90;
+    if (fillerRate <= 5) return 70;
+    if (fillerRate <= 8) return 50;
+    return 30;
+  }
+
+  _scoreFluency() {
+    // Based on pause frequency — fewer long pauses = better
+    if (this.pauseCount === 0) return 100;
+    if (this.pauseCount <= 2) return 85;
+    if (this.pauseCount <= 5) return 65;
+    return 40;
+  }
+}
+
+/* ── Audience Comment Engine ───────────────────────────────────── */
+
+class AudienceEngine {
+  constructor() {
+    this.recentTopics = [];
+  }
+
+  generate(transcript, category) {
+    const topic = transcript.trim();
+    if (!topic) return null;
+
+    const templates = this._getTemplates(category);
+    const text = choose(templates)(topic);
+    const username = choose(AUDIENCE_NAMES);
+
+    this.recentTopics.push(topic);
+    if (this.recentTopics.length > 8) this.recentTopics.shift();
+
+    return { username, text };
+  }
+
+  _getTemplates(category) {
+    const base = {
+      engaged: [
+        (t) => `Great point about "${t}"!`,
+        (t) => `"${t}" — that resonates with me`,
+        (t) => `Really interesting take on ${t}`,
+        (t) => `I never thought about "${t}" that way`,
+        (t) => `"${t}" is such a compelling argument`,
+      ],
+      curious: [
+        (t) => `Can you elaborate on ${t}?`,
+        (t) => `How does ${t} connect to the bigger picture?`,
+        (t) => `What evidence supports ${t}?`,
+        (t) => `Interesting — what about the counterargument to ${t}?`,
+        (t) => `Could you give an example of ${t}?`,
+      ],
+      supportive: [
+        (t) => `Love how you explained ${t} — very clear`,
+        (t) => `Your passion for ${t} really comes through`,
+        (t) => `Great delivery on the "${t}" section`,
+        (t) => `You're making ${t} easy to understand`,
+        (t) => `The way you structured the ${t} point was spot on`,
+      ],
+      constructive: [
+        (t) => `Maybe slow down a bit on ${t} for emphasis`,
+        (t) => `Could you use a concrete example for ${t}?`,
+        (t) => `Try pausing after "${t}" to let it land`,
+        (t) => `The ${t} point is strong — project your voice more`,
+        (t) => `Consider making eye contact when discussing ${t}`,
+      ],
+    };
+
+    // Category-specific audience templates
+    const categorySpecific = {
+      persuasion: [
+        (t) => `Strong argument! But what about the other side of ${t}?`,
+        (t) => `I'm almost convinced about ${t} — need one more example`,
+        (t) => `Your evidence for ${t} is compelling`,
+      ],
+      storytelling: [
+        (t) => `I'm hooked — what happened next with ${t}?`,
+        (t) => `The way you described "${t}" was so vivid`,
+        (t) => `Great tension building around ${t}`,
+      ],
+      elevator: [
+        (t) => `You had me at "${t}" — great hook!`,
+        (t) => `Clear value prop with ${t}`,
+        (t) => `Would invest based on the ${t} angle`,
+      ],
+      debate: [
+        (t) => `Devil's advocate: what if ${t} isn't true?`,
+        (t) => `Strong logic on ${t} — hard to counter`,
+        (t) => `Your ${t} rebuttal was razor sharp`,
+      ],
+      explanation: [
+        (t) => `Oh! ${t} finally makes sense now`,
+        (t) => `Great analogy for ${t}`,
+        (t) => `Even my grandma would understand ${t} after that`,
+      ],
+    };
+
+    const pool = [...base.engaged, ...base.curious, ...base.supportive, ...base.constructive];
+    if (category && categorySpecific[category]) {
+      pool.push(...categorySpecific[category]);
+    }
+    return pool;
+  }
+}
+
+/* ── Sound Engine ──────────────────────────────────────────────── */
+
+class SoundEngine {
+  constructor() { this._ctx = null; }
+
+  _ensureContext() {
+    if (!this._ctx) this._ctx = new (window.AudioContext || window.webkitAudioContext)();
     if (this._ctx.state === 'suspended') this._ctx.resume();
     return this._ctx;
   }
 
-  _playTone(freq, duration, type = 'sine', volume = TIMING.SOUND_VOLUME) {
+  _playTone(freq, dur, type = 'sine', vol = 0.12) {
     try {
       const ctx = this._ensureContext();
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = type;
       osc.frequency.value = freq;
-      gain.gain.setValueAtTime(volume, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      gain.gain.setValueAtTime(vol, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start();
-      osc.stop(ctx.currentTime + duration);
-    } catch (_) { /* Audio not available */ }
+      osc.stop(ctx.currentTime + dur);
+    } catch (_) { /* Audio unavailable */ }
   }
 
-  comment() { this._playTone(880, 0.08, 'sine', 0.06); }
-  goLive() { this._playTone(523, 0.15); this._playTone(659, 0.15); }
-  endStream() { this._playTone(440, 0.3, 'triangle', 0.1); }
-  milestone() { this._playTone(784, 0.12); setTimeout(() => this._playTone(1047, 0.15), 120); }
-  screenshot() { this._playTone(1200, 0.06, 'square', 0.08); }
-  emoji() { this._playTone(660, 0.05, 'sine', 0.04); }
+  start() { this._playTone(523, 0.15); setTimeout(() => this._playTone(659, 0.12), 100); }
+  countdownBeep() { this._playTone(880, 0.08); }
+  countdownFinal() { this._playTone(523, 0.3); setTimeout(() => this._playTone(784, 0.2), 150); }
+  complete() { this._playTone(523, 0.12); setTimeout(() => this._playTone(659, 0.12), 100); setTimeout(() => this._playTone(784, 0.15), 200); }
+  comment() { this._playTone(660, 0.05, 'sine', 0.04); }
 }
 
 /* ── Audio Visualizer ──────────────────────────────────────────── */
@@ -207,82 +460,43 @@ class AudioVisualizer {
       source.connect(this.analyser);
       this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
       this._draw();
-    } catch (_) { /* Audio context not available */ }
+    } catch (_) { /* Audio context unavailable */ }
   }
 
   _draw() {
     if (!this.analyser) return;
     this.animFrame = requestAnimationFrame(() => this._draw());
-
     const { canvas, ctx, analyser, dataArray } = this;
     canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
     canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
-    const w = canvas.width;
-    const h = canvas.height;
-
+    const w = canvas.width, h = canvas.height;
     analyser.getByteFrequencyData(dataArray);
     ctx.clearRect(0, 0, w, h);
-
     const barCount = dataArray.length;
     const barWidth = w / barCount;
     const gradient = ctx.createLinearGradient(0, h, 0, 0);
-    gradient.addColorStop(0, 'rgba(122, 255, 207, 0.8)');
-    gradient.addColorStop(0.5, 'rgba(83, 167, 255, 0.8)');
-    gradient.addColorStop(1, 'rgba(255, 58, 242, 0.8)');
-
+    gradient.addColorStop(0, 'rgba(99, 102, 241, 0.6)');
+    gradient.addColorStop(0.5, 'rgba(168, 85, 247, 0.6)');
+    gradient.addColorStop(1, 'rgba(236, 72, 153, 0.6)');
     for (let i = 0; i < barCount; i++) {
-      const barHeight = (dataArray[i] / 255) * h;
+      const barH = (dataArray[i] / 255) * h;
       ctx.fillStyle = gradient;
-      ctx.fillRect(i * barWidth, h - barHeight, barWidth - 1, barHeight);
+      ctx.fillRect(i * barWidth, h - barH, barWidth - 1, barH);
     }
   }
 
   stop() {
-    if (this.animFrame) {
-      cancelAnimationFrame(this.animFrame);
-      this.animFrame = null;
-    }
-    if (this.canvas) {
-      const ctx = this.canvas.getContext('2d');
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
+    if (this.animFrame) cancelAnimationFrame(this.animFrame);
+    this.animFrame = null;
+    if (this.canvas) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.analyser = null;
-  }
-}
-
-/* ── Confetti Engine ───────────────────────────────────────────── */
-
-class ConfettiEngine {
-  constructor(container) {
-    this.container = container;
-  }
-
-  burst() {
-    const colors = ['#ff3af2', '#7affcf', '#53a7ff', '#ffcf3a', '#ff4d6a', '#a78bfa'];
-    for (let i = 0; i < TIMING.CONFETTI_COUNT; i++) {
-      const piece = document.createElement('div');
-      piece.className = 'confetti-piece';
-      piece.style.setProperty('--x', `${(Math.random() - 0.5) * 600}px`);
-      piece.style.setProperty('--r', `${Math.random() * 720 - 360}deg`);
-      piece.style.left = `${40 + Math.random() * 20}%`;
-      piece.style.top = `${20 + Math.random() * 10}%`;
-      piece.style.background = choose(colors);
-      piece.style.animationDelay = `${Math.random() * 0.3}s`;
-      piece.style.animationDuration = `${1.5 + Math.random() * 1.5}s`;
-      this.container.appendChild(piece);
-    }
-    setTimeout(() => {
-      this.container.querySelectorAll('.confetti-piece').forEach((p) => p.remove());
-    }, TIMING.CONFETTI_DURATION);
   }
 }
 
 /* ── Toast Notifications ───────────────────────────────────────── */
 
 class ToastManager {
-  constructor(container) {
-    this.container = container;
-  }
+  constructor(container) { this.container = container; }
 
   show(message, type = 'info') {
     const toast = document.createElement('div');
@@ -297,689 +511,503 @@ class ToastManager {
   }
 }
 
-/* ── Sparkline (mini viewer chart) ─────────────────────────────── */
+/* ── Progress Store (localStorage) ─────────────────────────────── */
 
-class Sparkline {
-  constructor(canvas) {
-    this.canvas = canvas;
-    this.ctx = canvas.getContext('2d');
-    this.points = [];
+class ProgressStore {
+  constructor() {
+    this.key = 'hypecomm_progress';
   }
 
-  push(value) {
-    this.points.push(value);
-    if (this.points.length > TIMING.SPARKLINE_POINTS) this.points.shift();
-    this._draw();
-  }
-
-  _draw() {
-    const { canvas, ctx, points } = this;
-    if (points.length < 2) return;
-    canvas.width = canvas.offsetWidth * (window.devicePixelRatio || 1);
-    canvas.height = canvas.offsetHeight * (window.devicePixelRatio || 1);
-    const w = canvas.width;
-    const h = canvas.height;
-    const max = Math.max(...points, 1);
-    const step = w / (TIMING.SPARKLINE_POINTS - 1);
-
-    ctx.clearRect(0, 0, w, h);
-    ctx.beginPath();
-    ctx.strokeStyle = 'rgba(122, 255, 207, 0.7)';
-    ctx.lineWidth = 2;
-    ctx.lineJoin = 'round';
-
-    points.forEach((val, i) => {
-      const x = i * step;
-      const y = h - (val / max) * h * 0.85 - 2;
-      if (i === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-
-    // Fill under the line
-    ctx.lineTo((points.length - 1) * step, h);
-    ctx.lineTo(0, h);
-    ctx.closePath();
-    ctx.fillStyle = 'rgba(122, 255, 207, 0.08)';
-    ctx.fill();
-  }
-
-  clear() {
-    this.points = [];
-    if (this.canvas) {
-      const ctx = this.canvas.getContext('2d');
-      ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  _load() {
+    try {
+      return JSON.parse(localStorage.getItem(this.key)) || this._default();
+    } catch (_) {
+      return this._default();
     }
   }
-}
 
-/* ── Comment Engine v2 (with personas) ─────────────────────────── */
-
-class CommentEngine {
-  constructor() {
-    this.recentTopics = [];
-    this.conversationThreads = [];
-    this.templates = this._buildTemplates();
+  _save(data) {
+    try { localStorage.setItem(this.key, JSON.stringify(data)); } catch (_) { /* Storage full */ }
   }
 
-  _buildTemplates() {
+  _default() {
     return {
-      hype: {
-        exclamation: [
-          (t) => `YOOO "${t}" is incredible!!`,
-          (t) => `"${t}" just blew my mind!`,
-          (t) => `THIS. "${t}" is what we came for!`,
-          (t) => `"${t}" is the energy we needed today!`,
-        ],
-        'emoji-heavy': [
-          (t) => `🔥🔥🔥 "${t}" 🔥🔥🔥`,
-          (t) => `✨ "${t}" ✨ absolutely unreal`,
-          (t) => `"${t}" 💯💯 no cap`,
-          (t) => `⚡ ${t} ⚡ giving me goosebumps`,
-        ],
-        slang: [
-          (t) => `"${t}" is lowkey fire rn`,
-          (t) => `ngl "${t}" hits different`,
-          (t) => `"${t}" is bussin fr`,
-          (t) => `deadass, "${t}" is the vibe`,
-        ],
-        meme: [
-          (t) => `me when "${t}": 🤯🤯🤯`,
-          (t) => `"${t}" — inject this into my veins`,
-          (t) => `W take on "${t}" honestly`,
-          (t) => `"${t}" goes crazy hard tbh`,
-        ],
-      },
-      curious: {
-        question: [
-          (t) => `Wait, can you dive deeper on ${t}?`,
-          (t) => `How do you feel about ${t} vs the alternatives?`,
-          (t) => `What would you change about ${t}?`,
-          (t) => `Where do you see ${t} going next?`,
-        ],
-        scientific: [
-          (t) => `What's the data behind ${t}? Super curious`,
-          (t) => `Has anyone measured the impact of ${t}?`,
-          (t) => `Is ${t} reproducible in other contexts?`,
-          (t) => `Interesting — what's the mechanism behind ${t}?`,
-        ],
-        thoughtful: [
-          (t) => `I wonder how ${t} connects to the bigger picture...`,
-          (t) => `${t} raises an interesting question about methodology`,
-          (t) => `There's a nuance to ${t} that people miss`,
-          (t) => `What's the counterargument to ${t} though?`,
-        ],
-      },
-      supportive: {
-        encouraging: [
-          (t) => `You're explaining ${t} so well — keep going!`,
-          (t) => `Love how you break down ${t}. More people need to hear this`,
-          (t) => `${t} — great point, really resonates with me`,
-          (t) => `Thanks for sharing about ${t}. This is helpful`,
-        ],
-        warm: [
-          (t) => `This stream and "${t}" is exactly what I needed today`,
-          (t) => `"${t}" — honestly so glad I tuned in for this`,
-          (t) => `Your passion for ${t} really comes through`,
-          (t) => `"${t}" — you make this look effortless`,
-        ],
-      },
-      chill: {
-        poetic: [
-          (t) => `"${t}" — there's something meditative about that`,
-          (t) => `${t} has this quiet power to it`,
-          (t) => `the way you describe "${t}" paints a picture`,
-          (t) => `"${t}" — like a breath of fresh air`,
-        ],
-        musical: [
-          (t) => `"${t}" has a rhythm to it, you know?`,
-          (t) => `${t} — that's like a whole genre in itself`,
-          (t) => `the cadence of "${t}" is everything`,
-          (t) => `"${t}" — could be a song title tbh`,
-        ],
-      },
-      analytical: {
-        detailed: [
-          (t) => `Interesting — ${t} has 3 distinct aspects worth unpacking`,
-          (t) => `If you break down ${t}, the core principle is what matters`,
-          (t) => `${t} — I'd love to see the before/after comparison`,
-          (t) => `Worth noting: ${t} works differently in practice vs theory`,
-        ],
-        technical: [
-          (t) => `From a technical POV, ${t} has fascinating constraints`,
-          (t) => `The implementation of ${t} is trickier than it sounds`,
-          (t) => `${t} — what framework or tooling are you using?`,
-          (t) => `Has anyone benchmarked ${t} at scale?`,
-        ],
-      },
-      callback: [
-        (t, prev) => `Going back to "${prev}" — how does that connect with ${t}?`,
-        (t, prev) => `Wait, is ${t} related to what you said about "${prev}"?`,
-        (t, prev) => `"${prev}" + "${t}" — this stream is building on itself, love it`,
-        (t, prev) => `The thread from "${prev}" to ${t} — chef's kiss`,
-      ],
-      thread: [
-        (t, user) => `@${user} great point! And ${t} adds another layer`,
-        (t, user) => `Building on what @${user} said — ${t} is key`,
-        (t, user) => `@${user} YES and ${t} is exactly why`,
-      ],
+      sessions: [],
+      totalSessions: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+      lastPracticeDate: null,
+      personalBests: { overallScore: 0, wpm: 0, lowestFillerRate: 100 },
     };
   }
 
-  generate(transcript) {
-    const topic = transcript.trim();
-    if (!topic) return null;
+  addSession(report, category, mode) {
+    const data = this._load();
+    const session = {
+      date: new Date().toISOString(),
+      category,
+      mode,
+      duration: report.duration,
+      totalWords: report.totalWords,
+      wpm: report.wpm,
+      fillerRate: report.fillerRate,
+      overallScore: report.overallScore,
+      paceScore: report.paceScore,
+      fillerScore: report.fillerScore,
+      fluencyScore: report.fluencyScore,
+    };
+    data.sessions.push(session);
+    if (data.sessions.length > 100) data.sessions = data.sessions.slice(-100);
+    data.totalSessions += 1;
 
-    const username = choose(NAME_POOL);
-    const persona = PERSONAS[username] || { mood: 'hype', style: 'exclamation' };
-    const prevTopic = this.recentTopics.length > 0
-      ? this.recentTopics[this.recentTopics.length - 1] : null;
-
-    let text;
-
-    // 20% chance: reply to a previous commenter (thread)
-    if (this.conversationThreads.length > 0 && Math.random() < 0.2) {
-      const prev = choose(this.conversationThreads);
-      const fn = choose(this.templates.thread);
-      text = fn(topic, prev.username);
+    // Streak logic
+    const today = new Date().toDateString();
+    const lastDate = data.lastPracticeDate;
+    if (lastDate) {
+      const yesterday = new Date(Date.now() - 86400000).toDateString();
+      if (lastDate === today) {
+        // Same day, streak continues
+      } else if (lastDate === yesterday) {
+        data.currentStreak += 1;
+      } else {
+        data.currentStreak = 1;
+      }
+    } else {
+      data.currentStreak = 1;
     }
-    // 20% chance: reference a previous topic (callback)
-    else if (prevTopic && prevTopic !== topic && Math.random() < 0.2) {
-      const fn = choose(this.templates.callback);
-      text = fn(topic, prevTopic);
+    data.lastPracticeDate = today;
+    if (data.currentStreak > data.bestStreak) data.bestStreak = data.currentStreak;
+
+    // Personal bests
+    if (report.overallScore > data.personalBests.overallScore) {
+      data.personalBests.overallScore = report.overallScore;
     }
-    // Default: use persona-matched template
-    else {
-      const moodPool = this.templates[persona.mood];
-      const stylePool = moodPool ? moodPool[persona.style] : null;
-      const pool = stylePool || this.templates.hype.exclamation;
-      text = choose(pool)(topic);
+    if (report.wpm > data.personalBests.wpm) {
+      data.personalBests.wpm = report.wpm;
+    }
+    if (report.fillerRate < data.personalBests.lowestFillerRate) {
+      data.personalBests.lowestFillerRate = report.fillerRate;
     }
 
-    this.recentTopics.push(topic);
-    if (this.recentTopics.length > 10) this.recentTopics.shift();
+    this._save(data);
+    return data;
+  }
 
-    const entry = { username, text };
-    this.conversationThreads.push(entry);
-    if (this.conversationThreads.length > 20) this.conversationThreads.shift();
+  getProgress() { return this._load(); }
 
-    return entry;
+  getRecentScores(n = 10) {
+    const data = this._load();
+    return data.sessions.slice(-n).map((s) => s.overallScore);
   }
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   HypeCam Application
+   HypeComm Application
    ══════════════════════════════════════════════════════════════════ */
 
-class HypeCam {
+class HypeComm {
   constructor() {
     this.els = this._queryElements();
     this.state = {
-      mediaRecorder: null,
-      recordedChunks: [],
+      phase: 'setup', // setup | countdown | speaking | feedback
       stream: null,
       speech: null,
-      liveStart: null,
-      commentCount: 0,
-      autoscroll: true,
-      viewerCount: 0,
-      hypeLevel: 0,
-      currentFilter: 'none',
-      highlights: [],
-      lastMilestone: 0,
-      isPiP: false,
-      soundEnabled: true,
+      selectedCategory: null,
+      selectedMode: null,
+      currentTopic: null,
+      timeRemaining: 0,
       timerHandle: null,
-      viewerHandle: null,
-      demoHandle: null,
-      hypeDecayHandle: null,
-      sparklineHandle: null,
-      speechRetries: 0,
+      engagementLevel: 0,
+      engagementHandle: null,
+      commentCount: 0,
+      soundEnabled: true,
     };
 
-    this.commentEngine = new CommentEngine();
+    this.analyzer = new SpeechAnalyzer();
+    this.audience = new AudienceEngine();
     this.sound = new SoundEngine();
     this.toast = new ToastManager(this.els.toastContainer);
-    this.confetti = new ConfettiEngine(this.els.confettiLayer);
+    this.progress = new ProgressStore();
     this.visualizer = new AudioVisualizer(this.els.visualizerCanvas);
-    this.sparkline = new Sparkline(this.els.sparklineCanvas);
 
-    this._buildFilterButtons();
+    this._renderTopicCategories();
+    this._renderPracticeModes();
+    this._renderProgressDashboard();
     this._bindEvents();
-    this._bootDemoComments();
   }
 
   _queryElements() {
     const ids = [
-      'startBtn', 'stopBtn', 'downloadBtn', 'preview', 'liveBadge',
-      'statusLabel', 'latencyLabel', 'commentCount', 'commentStream',
-      'commentTemplate', 'speechHint', 'streamTimer', 'viewerCount',
-      'typingIndicator', 'emojiBar', 'visualizerCanvas', 'hypeMeter',
-      'hypeFill', 'hypeLabel', 'filterBar', 'highlightBtn', 'highlightsList',
-      'chatInput', 'chatSendBtn', 'moodIndicator', 'moodLabel', 'moodIcon',
-      'pipBtn', 'fullscreenBtn', 'screenshotBtn', 'soundToggle',
-      'toastContainer', 'confettiLayer', 'recapModal', 'recapContent',
-      'recapClose', 'sparklineCanvas', 'videoOverlay',
+      'topicGrid', 'modeGrid', 'topicDisplay', 'topicText', 'topicCategory',
+      'startBtn', 'stopBtn', 'newTopicBtn', 'timerDisplay', 'timerBar',
+      'timerBarFill', 'preview', 'visualizerCanvas', 'commentStream',
+      'commentTemplate', 'commentCount', 'engagementFill', 'engagementLabel',
+      'speechStatus', 'statusLabel', 'toastContainer', 'soundToggle',
+      'feedbackModal', 'feedbackContent', 'feedbackClose', 'feedbackPracticeAgain',
+      'progressPanel', 'totalSessions', 'currentStreak', 'bestScore',
+      'recentScores', 'setupPhase', 'practicePhase',
     ];
     const els = {};
     ids.forEach((id) => { els[id] = document.getElementById(id); });
-    // Template uses different getter
-    els.template = els.commentTemplate;
     return els;
   }
 
-  /* ── UI Helpers ──────────────────────────────────────────── */
+  /* ── Render Setup ───────────────────────────────────────── */
 
-  _setLiveUI(isLive) {
-    const { liveBadge, statusLabel, startBtn, stopBtn, highlightBtn,
-      pipBtn, fullscreenBtn, screenshotBtn, videoOverlay } = this.els;
-    liveBadge.innerHTML = `<span class="pulse"></span>${isLive ? 'LIVE' : 'OFF AIR'}`;
-    liveBadge.classList.toggle('is-live', isLive);
-    statusLabel.textContent = isLive ? 'On air — crowd is listening' : 'Stream ended';
-    startBtn.disabled = isLive;
-    stopBtn.disabled = !isLive;
-    if (highlightBtn) highlightBtn.disabled = !isLive;
-    if (pipBtn) pipBtn.disabled = !isLive;
-    if (fullscreenBtn) fullscreenBtn.disabled = !isLive;
-    if (screenshotBtn) screenshotBtn.disabled = !isLive;
-    if (videoOverlay) videoOverlay.classList.toggle('is-live', isLive);
-    document.body.classList.toggle('is-streaming', isLive);
-  }
-
-  _appendComment({ username, text, latency, isUser }) {
-    const node = this.els.template.content.cloneNode(true);
-    node.querySelector('.username').textContent = username;
-    node.querySelector('.timestamp').textContent = `${isoTime()} • ${latency}ms`;
-    node.querySelector('.body').textContent = text;
-
-    const article = node.querySelector('.comment');
-    if (isUser) article.classList.add('comment-user');
-
-    const colorSeed = username.charCodeAt(0) + username.charCodeAt(username.length - 1);
-    const hue = (colorSeed * 13) % 360;
-    node.querySelector('.avatar').textContent = username.charAt(0).toUpperCase();
-    node.querySelector('.avatar').style.background =
-      `linear-gradient(135deg, hsl(${hue} 85% 60%), hsl(${(hue + 60) % 360} 90% 55%))`;
-
-    this.els.commentStream.appendChild(node);
-    this.state.commentCount += 1;
-    this.els.commentCount.textContent = this.state.commentCount;
-
-    // Hype boost
-    this.state.hypeLevel = clamp(this.state.hypeLevel + TIMING.HYPE_PER_COMMENT, 0, TIMING.HYPE_MAX);
-    this._updateHypeMeter();
-    this._updateMood();
-
-    // Sound
-    if (this.state.soundEnabled) this.sound.comment();
-
-    // Milestone check
-    this._checkMilestone();
-
-    if (this.state.autoscroll) {
-      this.els.commentStream.scrollTop = this.els.commentStream.scrollHeight;
-    }
-  }
-
-  _showTypingIndicator() {
-    if (!this.els.typingIndicator) return;
-    const names = [];
-    for (let i = 0; i < 1 + Math.floor(Math.random() * 2); i++) {
-      names.push(choose(NAME_POOL));
-    }
-    const text = names.length === 1
-      ? `${names[0]} is typing...`
-      : `${names[0]} and ${names[1]} are typing...`;
-    this.els.typingIndicator.textContent = text;
-    this.els.typingIndicator.hidden = false;
-    setTimeout(() => {
-      this.els.typingIndicator.hidden = true;
-    }, TIMING.TYPING_INDICATOR_DURATION);
-  }
-
-  _updateTimer() {
-    if (!this.state.liveStart || !this.els.streamTimer) return;
-    this.els.streamTimer.textContent = formatDuration(performance.now() - this.state.liveStart);
-  }
-
-  /* ── Viewer Simulation ──────────────────────────────────── */
-
-  _startViewerSim() {
-    this.state.viewerCount = TIMING.VIEWER_BASE + Math.floor(Math.random() * TIMING.VIEWER_RANGE);
-    this._updateViewerDisplay();
-    this.state.viewerHandle = setInterval(() => {
-      const hypeBoost = Math.floor(this.state.hypeLevel / 20);
-      const drift = Math.floor(Math.random() * (TIMING.VIEWER_DRIFT + hypeBoost) * 2) - TIMING.VIEWER_DRIFT;
-      this.state.viewerCount = Math.max(1, this.state.viewerCount + drift);
-      this._updateViewerDisplay();
-    }, TIMING.VIEWER_UPDATE_INTERVAL);
-
-    // Sparkline
-    this.state.sparklineHandle = setInterval(() => {
-      this.sparkline.push(this.state.viewerCount);
-    }, TIMING.SPARKLINE_INTERVAL);
-  }
-
-  _stopViewerSim() {
-    clearInterval(this.state.viewerHandle);
-    clearInterval(this.state.sparklineHandle);
-    this.state.viewerHandle = null;
-    this.state.sparklineHandle = null;
-    this.state.viewerCount = 0;
-    this._updateViewerDisplay();
-  }
-
-  _updateViewerDisplay() {
-    if (this.els.viewerCount) {
-      this.els.viewerCount.textContent = this.state.viewerCount || '—';
-    }
-  }
-
-  /* ── Hype Meter ─────────────────────────────────────────── */
-
-  _startHypeDecay() {
-    this.state.hypeDecayHandle = setInterval(() => {
-      if (this.state.hypeLevel > 0) {
-        this.state.hypeLevel = Math.max(0, this.state.hypeLevel - TIMING.HYPE_DECAY_RATE);
-        this._updateHypeMeter();
-        this._updateMood();
-      }
-    }, TIMING.HYPE_DECAY_INTERVAL);
-  }
-
-  _stopHypeDecay() {
-    clearInterval(this.state.hypeDecayHandle);
-    this.state.hypeDecayHandle = null;
-    this.state.hypeLevel = 0;
-    this._updateHypeMeter();
-  }
-
-  _updateHypeMeter() {
-    if (!this.els.hypeFill || !this.els.hypeLabel) return;
-    const pct = this.state.hypeLevel;
-    this.els.hypeFill.style.width = `${pct}%`;
-    // Color shift from blue → green → magenta → gold
-    let label, color;
-    if (pct < 25) { label = 'Chill'; color = 'var(--accent-2)'; }
-    else if (pct < 50) { label = 'Warming Up'; color = 'var(--primary)'; }
-    else if (pct < 75) { label = 'On Fire'; color = 'var(--accent)'; }
-    else { label = 'MAXIMUM HYPE'; color = '#ffcf3a'; }
-    this.els.hypeFill.style.background = `linear-gradient(90deg, ${color}, ${color}dd)`;
-    this.els.hypeLabel.textContent = `${label} ${pct}%`;
-  }
-
-  /* ── Mood Indicator ─────────────────────────────────────── */
-
-  _updateMood() {
-    if (!this.els.moodIcon || !this.els.moodLabel) return;
-    const h = this.state.hypeLevel;
-    let icon, text;
-    if (h < 15) { icon = '😌'; text = 'Chill vibes'; }
-    else if (h < 35) { icon = '😊'; text = 'Good energy'; }
-    else if (h < 55) { icon = '😄'; text = 'Excited'; }
-    else if (h < 75) { icon = '🤩'; text = 'Hyped up'; }
-    else { icon = '🔥'; text = 'Erupting!'; }
-    this.els.moodIcon.textContent = icon;
-    this.els.moodLabel.textContent = text;
-  }
-
-  /* ── Milestones ─────────────────────────────────────────── */
-
-  _checkMilestone() {
-    for (const ms of MILESTONES) {
-      if (this.state.commentCount >= ms.count && this.state.lastMilestone < ms.count) {
-        this.state.lastMilestone = ms.count;
-        this.toast.show(`${ms.emoji} ${ms.message}!`, 'milestone');
-        this.confetti.burst();
-        if (this.state.soundEnabled) this.sound.milestone();
-        break;
-      }
-    }
-  }
-
-  /* ── Comment Scheduling ─────────────────────────────────── */
-
-  _scheduleComments(transcript) {
-    const bursts = TIMING.COMMENT_BURST_MIN + Math.floor(Math.random() * TIMING.COMMENT_BURST_EXTRA);
-    const now = performance.now();
-
-    this._showTypingIndicator();
-
-    for (let i = 0; i < bursts; i++) {
-      const jitter = TIMING.COMMENT_BASE_DELAY + i * TIMING.COMMENT_STAGGER + Math.random() * TIMING.COMMENT_JITTER;
-      setTimeout(() => {
-        const entry = this.commentEngine.generate(transcript);
-        if (!entry) return;
-        const latency = Math.max(TIMING.MIN_LATENCY_DISPLAY, Math.round(performance.now() - now));
-        this._appendComment({ ...entry, latency });
-      }, jitter);
-    }
-  }
-
-  /* ── User Chat Input ────────────────────────────────────── */
-
-  _handleUserChat() {
-    const input = this.els.chatInput;
-    if (!input) return;
-    const text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-
-    this._appendComment({ username: 'You', text, latency: 0, isUser: true });
-
-    // AI crowd responds to user chat
-    setTimeout(() => this._scheduleComments(text), 600);
-  }
-
-  /* ── Video Filters ──────────────────────────────────────── */
-
-  _buildFilterButtons() {
-    if (!this.els.filterBar) return;
-    Object.entries(VIDEO_FILTERS).forEach(([key, filter]) => {
+  _renderTopicCategories() {
+    if (!this.els.topicGrid) return;
+    this.els.topicGrid.innerHTML = '';
+    Object.entries(TOPICS).forEach(([key, cat]) => {
       const btn = document.createElement('button');
-      btn.className = 'filter-btn';
-      btn.textContent = filter.label;
-      btn.dataset.filter = key;
-      if (key === 'none') btn.classList.add('active');
-      this.els.filterBar.appendChild(btn);
+      btn.className = 'category-card';
+      btn.dataset.category = key;
+      btn.innerHTML = `
+        <span class="category-icon">${cat.icon}</span>
+        <span class="category-label">${cat.label}</span>
+        <span class="category-desc">${cat.description}</span>
+      `;
+      this.els.topicGrid.appendChild(btn);
     });
   }
 
-  _applyFilter(filterKey) {
-    const filter = VIDEO_FILTERS[filterKey];
-    if (!filter) return;
-    this.state.currentFilter = filterKey;
-    this.els.preview.style.filter = filter.css;
-
-    // Update active button
-    this.els.filterBar.querySelectorAll('.filter-btn').forEach((b) => {
-      b.classList.toggle('active', b.dataset.filter === filterKey);
+  _renderPracticeModes() {
+    if (!this.els.modeGrid) return;
+    this.els.modeGrid.innerHTML = '';
+    Object.entries(PRACTICE_MODES).forEach(([key, mode]) => {
+      const btn = document.createElement('button');
+      btn.className = 'mode-card';
+      btn.dataset.mode = key;
+      const dur = mode.duration > 0 ? `${mode.duration}s` : 'No limit';
+      btn.innerHTML = `
+        <span class="mode-icon">${mode.icon}</span>
+        <span class="mode-label">${mode.label}</span>
+        <span class="mode-dur">${dur}</span>
+      `;
+      this.els.modeGrid.appendChild(btn);
     });
   }
 
-  /* ── Stream Highlights ──────────────────────────────────── */
+  _renderProgressDashboard() {
+    const data = this.progress.getProgress();
+    if (this.els.totalSessions) this.els.totalSessions.textContent = data.totalSessions;
+    if (this.els.currentStreak) this.els.currentStreak.textContent = `${data.currentStreak} day${data.currentStreak !== 1 ? 's' : ''}`;
+    if (this.els.bestScore) this.els.bestScore.textContent = data.personalBests.overallScore || '—';
 
-  _addHighlight() {
-    if (!this.state.liveStart) return;
-    const elapsed = performance.now() - this.state.liveStart;
-    const highlight = {
-      time: formatDuration(elapsed),
-      rawMs: elapsed,
-      comments: this.state.commentCount,
-      hype: this.state.hypeLevel,
-    };
-    this.state.highlights.push(highlight);
-
-    if (this.els.highlightsList) {
-      const item = document.createElement('div');
-      item.className = 'highlight-item';
-      item.innerHTML = `<span class="highlight-time">${highlight.time}</span>
-        <span class="highlight-hype">${highlight.hype}% hype</span>`;
-      this.els.highlightsList.appendChild(item);
-    }
-
-    this.toast.show(`Highlight saved at ${highlight.time}`, 'info');
-    if (this.state.soundEnabled) this.sound.screenshot();
-  }
-
-  /* ── Picture-in-Picture ─────────────────────────────────── */
-
-  async _togglePiP() {
-    try {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-        this.state.isPiP = false;
-      } else if (this.els.preview.requestPictureInPicture) {
-        await this.els.preview.requestPictureInPicture();
-        this.state.isPiP = true;
+    // Recent scores mini chart
+    if (this.els.recentScores) {
+      const scores = this.progress.getRecentScores(10);
+      if (scores.length > 0) {
+        this.els.recentScores.innerHTML = scores.map((s) => {
+          const height = Math.max(4, s);
+          const color = s >= 80 ? 'var(--success)' : s >= 60 ? 'var(--warning)' : 'var(--accent)';
+          return `<div class="score-bar" style="height:${height}%;background:${color}" title="${s}%"></div>`;
+        }).join('');
+      } else {
+        this.els.recentScores.innerHTML = '<span class="no-data">No sessions yet</span>';
       }
-    } catch (err) {
-      this.toast.show('Picture-in-Picture not supported', 'error');
     }
   }
 
-  /* ── Fullscreen ─────────────────────────────────────────── */
+  /* ── Topic Selection ────────────────────────────────────── */
 
-  _toggleFullscreen() {
-    const el = this.els.preview;
-    if (document.fullscreenElement) {
-      document.exitFullscreen();
-    } else if (el.requestFullscreen) {
-      el.requestFullscreen();
-    }
-  }
-
-  /* ── Screenshot ─────────────────────────────────────────── */
-
-  _takeScreenshot() {
-    const video = this.els.preview;
-    if (!video.srcObject) return;
-    const canvas = document.createElement('canvas');
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-
-    // Apply current filter to screenshot
-    if (this.state.currentFilter !== 'none') {
-      ctx.filter = VIDEO_FILTERS[this.state.currentFilter].css;
-    }
-    ctx.drawImage(video, 0, 0);
-
-    // Add overlay watermark
-    ctx.filter = 'none';
-    ctx.font = 'bold 16px Space Grotesk, sans-serif';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    ctx.fillText(`HypeCam • ${isoTime()}`, 16, canvas.height - 16);
-
-    canvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `hypecam-screenshot-${Date.now()}.png`;
-      a.click();
-      URL.revokeObjectURL(url);
+  _selectCategory(key) {
+    this.state.selectedCategory = key;
+    this.els.topicGrid.querySelectorAll('.category-card').forEach((c) => {
+      c.classList.toggle('selected', c.dataset.category === key);
     });
-
-    if (this.state.soundEnabled) this.sound.screenshot();
-    this.toast.show('Screenshot saved!', 'info');
+    this._pickRandomTopic();
+    this._updateStartButton();
   }
 
-  /* ── Stream Recap ───────────────────────────────────────── */
+  _selectMode(key) {
+    this.state.selectedMode = key;
+    this.els.modeGrid.querySelectorAll('.mode-card').forEach((c) => {
+      c.classList.toggle('selected', c.dataset.mode === key);
+    });
+    this._updateStartButton();
+  }
 
-  _showRecap() {
-    if (!this.els.recapModal || !this.els.recapContent) return;
-    const duration = this.state.liveStart
-      ? formatDuration(performance.now() - this.state.liveStart)
-      : '00:00';
-    const peakViewers = Math.max(TIMING.VIEWER_BASE, this.state.viewerCount + 15);
-    const highlights = this.state.highlights;
+  _pickRandomTopic() {
+    const cat = TOPICS[this.state.selectedCategory];
+    if (!cat) return;
+    this.state.currentTopic = choose(cat.topics);
+    if (this.els.topicText) this.els.topicText.textContent = this.state.currentTopic;
+    if (this.els.topicCategory) this.els.topicCategory.textContent = `${cat.icon} ${cat.label}`;
+    if (this.els.topicDisplay) this.els.topicDisplay.hidden = false;
+  }
 
-    let highlightsHtml = '';
-    if (highlights.length > 0) {
-      highlightsHtml = `<div class="recap-section">
-        <h4>Highlights</h4>
-        ${highlights.map((h) => `<div class="recap-highlight">${h.time} — ${h.hype}% hype</div>`).join('')}
-      </div>`;
+  _updateStartButton() {
+    if (this.els.startBtn) {
+      this.els.startBtn.disabled = !(this.state.selectedCategory && this.state.selectedMode);
+    }
+  }
+
+  /* ── Practice Flow ──────────────────────────────────────── */
+
+  async _startPractice() {
+    // Get camera/mic
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      this.state.stream = stream;
+      this.els.preview.srcObject = stream;
+      this.visualizer.connect(stream);
+    } catch (err) {
+      this.toast.show(friendlyMediaError(err), 'error');
+      return;
     }
 
-    this.els.recapContent.innerHTML = `
-      <div class="recap-grid">
-        <div class="recap-stat">
-          <span class="recap-number">${this.state.commentCount}</span>
-          <span class="recap-label">Comments</span>
-        </div>
-        <div class="recap-stat">
-          <span class="recap-number">${duration}</span>
-          <span class="recap-label">Duration</span>
-        </div>
-        <div class="recap-stat">
-          <span class="recap-number">${peakViewers}</span>
-          <span class="recap-label">Peak Viewers</span>
-        </div>
-        <div class="recap-stat">
-          <span class="recap-number">${highlights.length}</span>
-          <span class="recap-label">Highlights</span>
+    // Switch to practice phase
+    this.state.phase = 'countdown';
+    if (this.els.setupPhase) this.els.setupPhase.hidden = true;
+    if (this.els.practicePhase) this.els.practicePhase.hidden = false;
+
+    // Countdown 3-2-1
+    await this._countdown(3);
+
+    // Start speaking phase
+    this.state.phase = 'speaking';
+    this.analyzer.start();
+    this._startSpeech();
+    this._startTimer();
+    this._startEngagementDecay();
+
+    this.els.stopBtn.disabled = false;
+    this.els.statusLabel.textContent = 'Speaking — your audience is listening';
+    if (this.state.soundEnabled) this.sound.start();
+    this.toast.show('Go! Your audience is listening.', 'success');
+  }
+
+  async _countdown(seconds) {
+    return new Promise((resolve) => {
+      let count = seconds;
+      if (this.els.timerDisplay) this.els.timerDisplay.textContent = count;
+      if (this.els.statusLabel) this.els.statusLabel.textContent = 'Get ready...';
+
+      const tick = setInterval(() => {
+        count -= 1;
+        if (this.state.soundEnabled) this.sound.countdownBeep();
+        if (count > 0) {
+          if (this.els.timerDisplay) this.els.timerDisplay.textContent = count;
+        } else {
+          clearInterval(tick);
+          if (this.els.timerDisplay) this.els.timerDisplay.textContent = '';
+          resolve();
+        }
+      }, 1000);
+    });
+  }
+
+  _startTimer() {
+    const mode = PRACTICE_MODES[this.state.selectedMode];
+    if (!mode || mode.duration === 0) {
+      // Free practice — count up
+      this.state.timeRemaining = 0;
+      let elapsed = 0;
+      this.state.timerHandle = setInterval(() => {
+        elapsed += 1;
+        if (this.els.timerDisplay) this.els.timerDisplay.textContent = formatDuration(elapsed * 1000);
+      }, 1000);
+      return;
+    }
+
+    this.state.timeRemaining = mode.duration;
+    if (this.els.timerDisplay) this.els.timerDisplay.textContent = formatDuration(mode.duration * 1000);
+    if (this.els.timerBarFill) this.els.timerBarFill.style.width = '100%';
+
+    this.state.timerHandle = setInterval(() => {
+      this.state.timeRemaining -= 1;
+      const remaining = this.state.timeRemaining;
+      if (this.els.timerDisplay) this.els.timerDisplay.textContent = formatDuration(remaining * 1000);
+
+      // Progress bar
+      if (this.els.timerBarFill) {
+        const pct = (remaining / mode.duration) * 100;
+        this.els.timerBarFill.style.width = `${pct}%`;
+        if (pct < 20) this.els.timerBarFill.classList.add('timer-warning');
+      }
+
+      // Countdown beeps in last 5 seconds
+      if (remaining <= TIMING.COUNTDOWN_BEEP_START && remaining > 0 && this.state.soundEnabled) {
+        this.sound.countdownBeep();
+      }
+
+      if (remaining <= 0) {
+        if (this.state.soundEnabled) this.sound.complete();
+        this._endPractice();
+      }
+    }, 1000);
+  }
+
+  _endPractice() {
+    this.state.phase = 'feedback';
+
+    // Stop timer
+    clearInterval(this.state.timerHandle);
+    this.state.timerHandle = null;
+
+    // Stop speech
+    this._stopSpeech();
+
+    // Stop engagement decay
+    clearInterval(this.state.engagementHandle);
+    this.state.engagementHandle = null;
+
+    // Stop camera
+    if (this.state.stream) {
+      this.state.stream.getTracks().forEach((t) => t.stop());
+      this.state.stream = null;
+    }
+    this.visualizer.stop();
+
+    // Generate report
+    const report = this.analyzer.getReport();
+
+    // Save to progress
+    this.progress.addSession(report, this.state.selectedCategory, this.state.selectedMode);
+
+    // Show feedback
+    this._showFeedback(report);
+    this.els.statusLabel.textContent = 'Practice complete — review your feedback';
+    this.els.stopBtn.disabled = true;
+  }
+
+  /* ── Feedback Modal ─────────────────────────────────────── */
+
+  _showFeedback(report) {
+    if (!this.els.feedbackModal || !this.els.feedbackContent) return;
+
+    const scoreColor = (s) => s >= 80 ? 'var(--success)' : s >= 60 ? 'var(--warning)' : 'var(--accent)';
+    const paceLabel = report.wpm === 0 ? 'No speech detected' :
+      report.wpm < 100 ? 'Too slow — try to pick up the pace' :
+      report.wpm <= 160 ? 'Great pace!' :
+      'A bit fast — try slowing down for clarity';
+
+    const fillerList = report.topFillers.length > 0
+      ? report.topFillers.map(([word, count]) =>
+        `<span class="filler-tag">"${word}" x${count}</span>`).join(' ')
+      : '<span class="filler-none">No filler words detected!</span>';
+
+    this.els.feedbackContent.innerHTML = `
+      <div class="score-hero">
+        <div class="score-circle" style="--score-color:${scoreColor(report.overallScore)}">
+          <span class="score-value">${report.overallScore}</span>
+          <span class="score-label">Overall</span>
         </div>
       </div>
-      ${highlightsHtml}
+
+      <div class="score-breakdown">
+        <div class="score-item">
+          <span class="score-item-label">Pace</span>
+          <div class="score-item-bar"><div class="score-item-fill" style="width:${report.paceScore}%;background:${scoreColor(report.paceScore)}"></div></div>
+          <span class="score-item-value">${report.paceScore}</span>
+        </div>
+        <div class="score-item">
+          <span class="score-item-label">Clarity</span>
+          <div class="score-item-bar"><div class="score-item-fill" style="width:${report.fillerScore}%;background:${scoreColor(report.fillerScore)}"></div></div>
+          <span class="score-item-value">${report.fillerScore}</span>
+        </div>
+        <div class="score-item">
+          <span class="score-item-label">Fluency</span>
+          <div class="score-item-bar"><div class="score-item-fill" style="width:${report.fluencyScore}%;background:${scoreColor(report.fluencyScore)}"></div></div>
+          <span class="score-item-value">${report.fluencyScore}</span>
+        </div>
+      </div>
+
+      <div class="feedback-stats">
+        <div class="fb-stat"><span class="fb-num">${report.totalWords}</span><span class="fb-label">Words</span></div>
+        <div class="fb-stat"><span class="fb-num">${report.wpm}</span><span class="fb-label">WPM</span></div>
+        <div class="fb-stat"><span class="fb-num">${formatDuration(report.duration * 1000)}</span><span class="fb-label">Duration</span></div>
+        <div class="fb-stat"><span class="fb-num">${report.pauseCount}</span><span class="fb-label">Pauses</span></div>
+      </div>
+
+      <div class="feedback-section">
+        <h4>Pace</h4>
+        <p>${paceLabel}</p>
+      </div>
+
+      <div class="feedback-section">
+        <h4>Filler Words (${report.totalFillers} total — ${report.fillerRate}% of speech)</h4>
+        <div class="filler-tags">${fillerList}</div>
+      </div>
+
+      ${report.fullTranscript ? `
+      <div class="feedback-section">
+        <h4>What You Said</h4>
+        <p class="transcript-text">${report.fullTranscript}</p>
+      </div>` : ''}
     `;
-    this.els.recapModal.hidden = false;
-    this.els.recapModal.classList.add('recap-visible');
+
+    this.els.feedbackModal.hidden = false;
+    this.els.feedbackModal.classList.add('modal-visible');
   }
 
-  _hideRecap() {
-    if (!this.els.recapModal) return;
-    this.els.recapModal.classList.remove('recap-visible');
-    setTimeout(() => { this.els.recapModal.hidden = true; }, 300);
+  _hideFeedback() {
+    if (!this.els.feedbackModal) return;
+    this.els.feedbackModal.classList.remove('modal-visible');
+    setTimeout(() => { this.els.feedbackModal.hidden = true; }, 300);
+  }
+
+  _returnToSetup() {
+    this._hideFeedback();
+    this.state.phase = 'setup';
+    this.state.commentCount = 0;
+    this.state.engagementLevel = 0;
+    if (this.els.commentStream) this.els.commentStream.innerHTML = '';
+    if (this.els.commentCount) this.els.commentCount.textContent = '0';
+    if (this.els.engagementFill) this.els.engagementFill.style.width = '0%';
+    if (this.els.engagementLabel) this.els.engagementLabel.textContent = 'Waiting 0%';
+    if (this.els.timerBarFill) {
+      this.els.timerBarFill.style.width = '0%';
+      this.els.timerBarFill.classList.remove('timer-warning');
+    }
+    if (this.els.setupPhase) this.els.setupPhase.hidden = false;
+    if (this.els.practicePhase) this.els.practicePhase.hidden = true;
+    this._renderProgressDashboard();
+    this._pickRandomTopic();
   }
 
   /* ── Speech Recognition ─────────────────────────────────── */
 
-  _setupSpeechRecognition() {
+  _startSpeech() {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      this.els.speechHint.textContent = ERROR_MESSAGES.SPEECH_UNAVAILABLE;
-      return null;
+      if (this.els.speechStatus) this.els.speechStatus.textContent = ERROR_MESSAGES.SPEECH_UNAVAILABLE;
+      return;
     }
     const recognition = new SpeechRecognition();
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-US';
-    return recognition;
-  }
+    this.state.speech = recognition;
 
-  _startSpeech() {
-    const speech = this._setupSpeechRecognition();
-    if (!speech) return;
-    this.state.speech = speech;
-    this.state.speechRetries = 0;
-
-    speech.onresult = (event) => {
+    recognition.onresult = (event) => {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
           const transcript = event.results[i][0].transcript.trim();
-          if (transcript) this._scheduleComments(transcript);
+          if (transcript) {
+            this.analyzer.addTranscript(transcript);
+            this._scheduleAudienceComments(transcript);
+          }
         }
       }
     };
 
-    speech.onerror = (event) => {
+    recognition.onerror = (event) => {
       if (event.error === 'not-allowed') {
-        this.els.speechHint.textContent = ERROR_MESSAGES.SPEECH_DENIED;
+        if (this.els.speechStatus) this.els.speechStatus.textContent = ERROR_MESSAGES.SPEECH_DENIED;
         return;
       }
-      this.els.speechHint.textContent = ERROR_MESSAGES.SPEECH_LOST;
-      this.state.speechRetries += 1;
+      if (this.els.speechStatus) this.els.speechStatus.textContent = ERROR_MESSAGES.SPEECH_LOST;
     };
 
-    speech.onend = () => {
-      if (this.state.liveStart && this.state.speech) {
-        try { speech.start(); } catch (_) { /* already started */ }
+    recognition.onend = () => {
+      if (this.state.phase === 'speaking' && this.state.speech) {
+        try { recognition.start(); } catch (_) { /* already started */ }
       }
     };
 
-    speech.start();
-    this.els.speechHint.textContent = 'Listening — keep talking to feed the crowd.';
+    recognition.start();
+    if (this.els.speechStatus) this.els.speechStatus.textContent = 'Listening...';
   }
 
   _stopSpeech() {
@@ -990,216 +1018,124 @@ class HypeCam {
     }
   }
 
-  /* ── Media / Recording ──────────────────────────────────── */
+  /* ── Audience Comments ──────────────────────────────────── */
 
-  _getPreferredMimeType() {
-    const candidates = [
-      'video/mp4;codecs="avc1.42E01E, mp4a.40.2"',
-      'video/webm;codecs=vp9,opus',
-      'video/webm;codecs=vp8,opus',
-    ];
-    return candidates.find((type) => MediaRecorder.isTypeSupported(type));
-  }
+  _scheduleAudienceComments(transcript) {
+    const bursts = TIMING.COMMENT_BURST_MIN + Math.floor(Math.random() * TIMING.COMMENT_BURST_EXTRA);
+    const now = performance.now();
 
-  async _startStream() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-      this.state.stream = stream;
-      this.els.preview.srcObject = stream;
-
-      const mimeType = this._getPreferredMimeType();
-      const recorder = new MediaRecorder(stream, mimeType ? { mimeType } : undefined);
-      this.state.mediaRecorder = recorder;
-      this.state.recordedChunks = [];
-
-      recorder.ondataavailable = (event) => {
-        if (event.data.size > 0) this.state.recordedChunks.push(event.data);
-      };
-      recorder.onstop = () => this._handleRecordingStop();
-      recorder.start(TIMING.MEDIA_RECORDER_TIMESLICE);
-
-      this.state.liveStart = performance.now();
-      this._setLiveUI(true);
-      this.els.statusLabel.textContent = 'Live and recording';
-      this.els.latencyLabel.textContent = 'Low';
-      this.els.startBtn.blur();
-
-      // Start systems
-      this.state.timerHandle = setInterval(() => this._updateTimer(), TIMING.TIMER_INTERVAL);
-      this._updateTimer();
-      this._startViewerSim();
-      this._startHypeDecay();
-      this._startSpeech();
-      this.visualizer.connect(stream);
-
-      if (this.state.soundEnabled) this.sound.goLive();
-      this.toast.show('You are now live!', 'success');
-    } catch (err) {
-      this.els.statusLabel.textContent = friendlyMediaError(err);
-      this.toast.show(friendlyMediaError(err), 'error');
-      console.error('[HypeCam]', err);
-    }
-  }
-
-  _handleRecordingStop() {
-    const { mediaRecorder, recordedChunks } = this.state;
-    const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || 'video/webm' });
-    const ext = blob.type.includes('mp4') ? 'mp4' : 'webm';
-    const url = URL.createObjectURL(blob);
-    this.els.downloadBtn.href = url;
-    this.els.downloadBtn.download = `hypecam-${Date.now()}.${ext}`;
-    this.els.downloadBtn.disabled = false;
-    this.els.downloadBtn.setAttribute('aria-disabled', 'false');
-    this.els.statusLabel.textContent = `Stream saved as .${ext.toUpperCase()} — ready to download`;
-  }
-
-  _stopStream() {
-    const { mediaRecorder, stream } = this.state;
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-      mediaRecorder.stop();
-    }
-    if (stream) {
-      stream.getTracks().forEach((t) => t.stop());
-      this.state.stream = null;
-    }
-    this._stopSpeech();
-    this._setLiveUI(false);
-    this.els.latencyLabel.textContent = '—';
-
-    clearInterval(this.state.timerHandle);
-    this.state.timerHandle = null;
-    if (this.els.streamTimer) this.els.streamTimer.textContent = '00:00';
-
-    this._stopViewerSim();
-    this._stopHypeDecay();
-    this.visualizer.stop();
-    this.sparkline.clear();
-
-    // Reset filter
-    this._applyFilter('none');
-
-    // Show recap
-    if (this.state.commentCount > 0) {
-      if (this.state.soundEnabled) this.sound.endStream();
-      this._showRecap();
-    }
-
-    this.state.liveStart = null;
-  }
-
-  /* ── Demo Mode ──────────────────────────────────────────── */
-
-  _bootDemoComments() {
-    let index = 0;
-    this.state.demoHandle = setInterval(() => {
-      if (this.state.liveStart) return;
-      this._scheduleComments(DEMO_TOPICS[index % DEMO_TOPICS.length]);
-      index += 1;
-    }, TIMING.DEMO_INTERVAL);
-  }
-
-  /* ── Emoji Reactions ────────────────────────────────────── */
-
-  _handleEmojiReaction(emoji) {
-    // Float multiple emojis for a burst effect
-    const count = 2 + Math.floor(Math.random() * 3);
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < bursts; i++) {
+      const delay = TIMING.COMMENT_BASE_DELAY + i * TIMING.COMMENT_STAGGER + Math.random() * TIMING.COMMENT_JITTER;
       setTimeout(() => {
-        const floater = document.createElement('span');
-        floater.className = 'emoji-float';
-        floater.textContent = emoji;
-        floater.style.left = `${25 + Math.random() * 50}%`;
-        floater.style.animationDuration = `${1.2 + Math.random() * 1}s`;
-        this.els.commentStream.appendChild(floater);
-        floater.addEventListener('animationend', () => floater.remove());
-      }, i * 80);
+        if (this.state.phase !== 'speaking') return;
+        const entry = this.audience.generate(transcript, this.state.selectedCategory);
+        if (!entry) return;
+        const latency = Math.max(40, Math.round(performance.now() - now));
+        this._appendComment({ ...entry, latency });
+      }, delay);
     }
-    if (this.state.soundEnabled) this.sound.emoji();
+  }
 
-    // Boost hype
-    this.state.hypeLevel = clamp(this.state.hypeLevel + 3, 0, TIMING.HYPE_MAX);
-    this._updateHypeMeter();
+  _appendComment({ username, text, latency }) {
+    if (!this.els.commentTemplate) return;
+    const node = this.els.commentTemplate.content.cloneNode(true);
+    node.querySelector('.username').textContent = username;
+    node.querySelector('.timestamp').textContent = `${isoTime()} • ${latency}ms`;
+    node.querySelector('.body').textContent = text;
+
+    const colorSeed = username.charCodeAt(0) + username.charCodeAt(username.length - 1);
+    const hue = (colorSeed * 13) % 360;
+    node.querySelector('.avatar').textContent = username.charAt(0).toUpperCase();
+    node.querySelector('.avatar').style.background =
+      `linear-gradient(135deg, hsl(${hue} 85% 60%), hsl(${(hue + 60) % 360} 90% 55%))`;
+
+    this.els.commentStream.appendChild(node);
+    this.state.commentCount += 1;
+    if (this.els.commentCount) this.els.commentCount.textContent = this.state.commentCount;
+
+    // Engagement boost
+    this.state.engagementLevel = clamp(
+      this.state.engagementLevel + TIMING.ENGAGEMENT_PER_COMMENT, 0, TIMING.ENGAGEMENT_MAX);
+    this._updateEngagement();
+
+    if (this.state.soundEnabled) this.sound.comment();
+
+    this.els.commentStream.scrollTop = this.els.commentStream.scrollHeight;
+  }
+
+  /* ── Engagement Meter ───────────────────────────────────── */
+
+  _startEngagementDecay() {
+    this.state.engagementHandle = setInterval(() => {
+      if (this.state.engagementLevel > 0) {
+        this.state.engagementLevel = Math.max(0,
+          this.state.engagementLevel - TIMING.ENGAGEMENT_DECAY_RATE);
+        this._updateEngagement();
+      }
+    }, TIMING.ENGAGEMENT_DECAY_INTERVAL);
+  }
+
+  _updateEngagement() {
+    const pct = Math.round(this.state.engagementLevel);
+    if (this.els.engagementFill) this.els.engagementFill.style.width = `${pct}%`;
+    if (this.els.engagementLabel) {
+      let label;
+      if (pct < 20) label = 'Quiet';
+      else if (pct < 40) label = 'Interested';
+      else if (pct < 60) label = 'Engaged';
+      else if (pct < 80) label = 'Excited';
+      else label = 'Captivated!';
+      this.els.engagementLabel.textContent = `${label} ${pct}%`;
+    }
   }
 
   /* ── Event Bindings ─────────────────────────────────────── */
 
   _bindEvents() {
-    // Core stream controls
-    this.els.startBtn.addEventListener('click', () => {
-      this.els.commentStream.innerHTML = '';
-      this.state.commentCount = 0;
-      this.els.commentCount.textContent = '0';
-      this.els.downloadBtn.disabled = true;
-      this.state.highlights = [];
-      this.state.lastMilestone = 0;
-      if (this.els.highlightsList) this.els.highlightsList.innerHTML = '';
-      this.commentEngine.recentTopics = [];
-      this.commentEngine.conversationThreads = [];
-      this._startStream();
-    });
-
-    this.els.stopBtn.addEventListener('click', () => this._stopStream());
-
-    // Autoscroll detection
-    this.els.commentStream.addEventListener('scroll', () => {
-      const el = this.els.commentStream;
-      this.state.autoscroll = el.scrollTop + el.clientHeight >= el.scrollHeight - TIMING.AUTOSCROLL_THRESHOLD;
-    });
-
-    // Download cleanup
-    this.els.downloadBtn.addEventListener('click', () => {
-      setTimeout(() => URL.revokeObjectURL(this.els.downloadBtn.href), TIMING.URL_REVOKE_DELAY);
-    });
-
-    // Emoji bar
-    if (this.els.emojiBar) {
-      this.els.emojiBar.addEventListener('click', (e) => {
-        if (e.target.classList.contains('emoji-btn')) {
-          this._handleEmojiReaction(e.target.textContent);
-        }
+    // Category selection
+    if (this.els.topicGrid) {
+      this.els.topicGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.category-card');
+        if (card) this._selectCategory(card.dataset.category);
       });
     }
 
-    // Video filters
-    if (this.els.filterBar) {
-      this.els.filterBar.addEventListener('click', (e) => {
-        if (e.target.classList.contains('filter-btn')) {
-          this._applyFilter(e.target.dataset.filter);
-        }
+    // Mode selection
+    if (this.els.modeGrid) {
+      this.els.modeGrid.addEventListener('click', (e) => {
+        const card = e.target.closest('.mode-card');
+        if (card) this._selectMode(card.dataset.mode);
       });
     }
 
-    // Highlights
-    if (this.els.highlightBtn) {
-      this.els.highlightBtn.addEventListener('click', () => this._addHighlight());
+    // New topic button
+    if (this.els.newTopicBtn) {
+      this.els.newTopicBtn.addEventListener('click', () => this._pickRandomTopic());
     }
 
-    // Chat input
-    if (this.els.chatSendBtn) {
-      this.els.chatSendBtn.addEventListener('click', () => this._handleUserChat());
+    // Start
+    if (this.els.startBtn) {
+      this.els.startBtn.addEventListener('click', () => this._startPractice());
     }
-    if (this.els.chatInput) {
-      this.els.chatInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          this._handleUserChat();
-        }
+
+    // Stop early
+    if (this.els.stopBtn) {
+      this.els.stopBtn.addEventListener('click', () => {
+        if (this.state.phase === 'speaking') this._endPractice();
       });
     }
 
-    // Picture-in-Picture
-    if (this.els.pipBtn) {
-      this.els.pipBtn.addEventListener('click', () => this._togglePiP());
+    // Feedback modal
+    if (this.els.feedbackClose) {
+      this.els.feedbackClose.addEventListener('click', () => this._returnToSetup());
     }
-
-    // Fullscreen
-    if (this.els.fullscreenBtn) {
-      this.els.fullscreenBtn.addEventListener('click', () => this._toggleFullscreen());
+    if (this.els.feedbackPracticeAgain) {
+      this.els.feedbackPracticeAgain.addEventListener('click', () => this._returnToSetup());
     }
-
-    // Screenshot
-    if (this.els.screenshotBtn) {
-      this.els.screenshotBtn.addEventListener('click', () => this._takeScreenshot());
+    if (this.els.feedbackModal) {
+      this.els.feedbackModal.addEventListener('click', (e) => {
+        if (e.target === this.els.feedbackModal) this._returnToSetup();
+      });
     }
 
     // Sound toggle
@@ -1207,53 +1143,18 @@ class HypeCam {
       this.els.soundToggle.addEventListener('click', () => {
         this.state.soundEnabled = !this.state.soundEnabled;
         this.els.soundToggle.textContent = this.state.soundEnabled ? '🔊' : '🔇';
-        this.els.soundToggle.setAttribute('aria-label',
-          this.state.soundEnabled ? 'Mute sound effects' : 'Unmute sound effects');
-      });
-    }
-
-    // Recap modal close
-    if (this.els.recapClose) {
-      this.els.recapClose.addEventListener('click', () => this._hideRecap());
-    }
-    if (this.els.recapModal) {
-      this.els.recapModal.addEventListener('click', (e) => {
-        if (e.target === this.els.recapModal) this._hideRecap();
       });
     }
 
     // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      const noMod = !e.metaKey && !e.ctrlKey;
-      if (e.key === 's' && noMod) {
-        if (!this.els.startBtn.disabled) this.els.startBtn.click();
-      }
-      if (e.key === 'e' && noMod) {
-        if (!this.els.stopBtn.disabled) this.els.stopBtn.click();
-      }
-      if (e.key === 'h' && noMod && this.state.liveStart) {
-        this._addHighlight();
-      }
-      if (e.key === 'p' && noMod && this.state.liveStart) {
-        this._togglePiP();
-      }
-      if (e.key === 'f' && noMod && this.state.liveStart) {
-        this._toggleFullscreen();
-      }
-      if (e.key === 'c' && noMod && this.state.liveStart) {
-        this._takeScreenshot();
-      }
-      if (e.key === 'm' && noMod) {
-        if (this.els.soundToggle) this.els.soundToggle.click();
-      }
-      if (e.key === 'Escape') {
-        this._hideRecap();
-      }
+      if (e.key === 'Escape') this._returnToSetup();
+      if (e.key === 'n' && this.state.phase === 'setup') this._pickRandomTopic();
     });
   }
 }
 
 /* ── Boot ──────────────────────────────────────────────────────── */
 
-const app = new HypeCam();
+const app = new HypeComm();

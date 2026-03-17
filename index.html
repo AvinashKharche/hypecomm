@@ -3,143 +3,157 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="HypeCam — state-of-the-art glitch-pop live streaming studio with AI crowd reactions, audio visualizer, video filters, and more. Runs entirely in your browser." />
-  <meta name="theme-color" content="#080910" />
-  <title>HypeCam | Glitch-Pop Live Studio</title>
+  <meta name="description" content="HypeComm — Practice your communication skills with AI audience feedback. Get scored on pace, filler words, and fluency." />
+  <meta name="theme-color" content="#0f0f1a" />
+  <title>HypeComm | Communication Skills Practice</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <a class="skip-link" href="#commentStream">Skip to comments</a>
+  <a class="skip-link" href="#topicGrid">Skip to topics</a>
 
   <!-- Toast Notifications -->
-  <div class="toast-container" id="toastContainer" aria-live="assertive" aria-atomic="true"></div>
+  <div class="toast-container" id="toastContainer" aria-live="assertive"></div>
 
-  <!-- Confetti Layer -->
-  <div class="confetti-layer" id="confettiLayer" aria-hidden="true"></div>
+  <div class="app-shell">
 
-  <div class="grid" role="application" aria-label="HypeCam Live Studio">
-    <header class="app-header" role="banner">
-      <div class="title-block">
-        <div class="title-glitch" aria-hidden="true">HypeCam</div>
-        <h1>HypeCam</h1>
-        <p class="subtitle">Glitch-pop live studio with AI crowd energy</p>
+    <!-- ── Header ──────────────────────────────────────────── -->
+    <header class="app-header">
+      <div class="header-left">
+        <h1 class="logo">HypeComm</h1>
+        <p class="tagline">Practice speaking. Get feedback. Improve.</p>
       </div>
-      <nav class="controls" aria-label="Stream controls">
-        <button id="startBtn" class="btn primary">
-          Start Stream <kbd class="kbd-hint">S</kbd>
-        </button>
-        <button id="stopBtn" class="btn" disabled>
-          End Stream <kbd class="kbd-hint">E</kbd>
-        </button>
-        <a id="downloadBtn" class="btn ghost" disabled role="button" aria-disabled="true">Download MP4</a>
-        <button id="soundToggle" class="btn-icon" type="button" aria-label="Mute sound effects" title="Toggle sound">🔊</button>
-      </nav>
+      <div class="header-right">
+        <button id="soundToggle" class="btn-icon" type="button" aria-label="Toggle sound">🔊</button>
+      </div>
     </header>
 
-    <main class="live-stage" id="main">
+    <!-- ── Setup Phase ─────────────────────────────────────── -->
+    <div id="setupPhase">
 
-      <!-- ── Video Pane ──────────────────────────────────── -->
-      <section class="video-pane" aria-label="Video preview">
-        <div class="video-wrapper">
-          <div class="live-badge" id="liveBadge" role="status" aria-live="polite">
-            <span class="pulse" aria-hidden="true"></span>OFF AIR
-          </div>
-          <video id="preview" playsinline autoplay muted aria-label="Camera preview"></video>
-          <div class="video-overlay" id="videoOverlay" aria-hidden="true"></div>
-          <canvas class="visualizer-canvas" id="visualizerCanvas" aria-hidden="true"></canvas>
+      <!-- Progress Dashboard -->
+      <section class="progress-dashboard" id="progressPanel" aria-label="Your progress">
+        <div class="progress-stat">
+          <span class="progress-num" id="totalSessions">0</span>
+          <span class="progress-label">Sessions</span>
         </div>
-
-        <!-- Video Controls -->
-        <div class="video-controls" role="toolbar" aria-label="Video tools">
-          <button id="screenshotBtn" class="btn-icon" type="button" disabled aria-label="Take screenshot" title="Screenshot (C)">📸</button>
-          <button id="pipBtn" class="btn-icon" type="button" disabled aria-label="Picture-in-Picture" title="PiP (P)">🖼️</button>
-          <button id="fullscreenBtn" class="btn-icon" type="button" disabled aria-label="Fullscreen" title="Fullscreen (F)">⛶</button>
-          <button id="highlightBtn" class="btn-icon" type="button" disabled aria-label="Add highlight" title="Highlight (H)">⭐</button>
+        <div class="progress-stat">
+          <span class="progress-num" id="currentStreak">0 days</span>
+          <span class="progress-label">Streak</span>
         </div>
-
-        <!-- Filter Bar -->
-        <div class="filter-bar" id="filterBar" role="toolbar" aria-label="Video filters"></div>
-
-        <!-- Hype Meter -->
-        <div class="hype-meter" id="hypeMeter" role="meter" aria-label="Hype level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
-          <div class="hype-meter-header">
-            <span class="hype-meter-title">Hype Level</span>
-            <span class="hype-meter-label" id="hypeLabel">Chill 0%</span>
-          </div>
-          <div class="hype-track">
-            <div class="hype-fill" id="hypeFill"></div>
-          </div>
+        <div class="progress-stat">
+          <span class="progress-num" id="bestScore">—</span>
+          <span class="progress-label">Best Score</span>
         </div>
-
-        <!-- Stats Readout -->
-        <div class="readout" aria-label="Stream statistics">
-          <div class="stat"><span class="label">Latency</span><span id="latencyLabel">—</span></div>
-          <div class="stat"><span class="label">Comments</span><span id="commentCount">0</span></div>
-          <div class="stat"><span class="label">Status</span><span id="statusLabel">Waiting to go live</span></div>
-          <div class="stat"><span class="label">Duration</span><span id="streamTimer">00:00</span></div>
-          <div class="stat stat-viewers">
-            <span class="label">Viewers</span>
-            <span id="viewerCount">—</span>
-            <canvas class="sparkline-canvas" id="sparklineCanvas" aria-hidden="true"></canvas>
+        <div class="progress-stat progress-chart">
+          <div class="recent-scores" id="recentScores" aria-label="Recent scores">
+            <span class="no-data">No sessions yet</span>
           </div>
-        </div>
-
-        <!-- Highlights Panel -->
-        <div class="highlights-panel" id="highlightsPanel">
-          <h3>Highlights</h3>
-          <div class="highlights-list" id="highlightsList" aria-label="Saved highlights"></div>
+          <span class="progress-label">Last 10 Sessions</span>
         </div>
       </section>
 
-      <!-- ── Chat Pane ───────────────────────────────────── -->
-      <section class="chat-pane" aria-label="Live comments">
-        <div class="chat-header">
-          <div class="chat-header-left">
-            <p class="eyebrow">AI-powered crowd</p>
-            <h2>Live Comments</h2>
-          </div>
-          <div class="mood-indicator" id="moodIndicator" role="status" aria-label="Crowd mood">
-            <span class="mood-icon" id="moodIcon">😌</span>
-            <span class="mood-label" id="moodLabel">Chill vibes</span>
-          </div>
-        </div>
-
-        <div class="hint" id="speechHint" role="status" aria-live="polite">Enable your mic &amp; camera to see live reactions.</div>
-
-        <div class="typing-indicator" id="typingIndicator" hidden aria-live="polite"></div>
-
-        <div class="comment-stream" id="commentStream" role="log" aria-live="polite" aria-label="Comment stream" tabindex="0"></div>
-
-        <!-- Emoji Reactions -->
-        <div class="emoji-bar" id="emojiBar" role="toolbar" aria-label="Emoji reactions">
-          <button class="emoji-btn" type="button" aria-label="Fire reaction">🔥</button>
-          <button class="emoji-btn" type="button" aria-label="Heart reaction">💜</button>
-          <button class="emoji-btn" type="button" aria-label="Clap reaction">👏</button>
-          <button class="emoji-btn" type="button" aria-label="Sparkle reaction">✨</button>
-          <button class="emoji-btn" type="button" aria-label="100 reaction">💯</button>
-          <button class="emoji-btn" type="button" aria-label="Target reaction">🎯</button>
-          <button class="emoji-btn" type="button" aria-label="Lightning reaction">⚡</button>
-          <button class="emoji-btn" type="button" aria-label="Rocket reaction">🚀</button>
-        </div>
-
-        <!-- User Chat Input -->
-        <div class="chat-input-area">
-          <input type="text" class="chat-input" id="chatInput" placeholder="Type a message to the crowd..." aria-label="Chat message input" maxlength="280" />
-          <button class="chat-send-btn" id="chatSendBtn" type="button" aria-label="Send message">Send</button>
-        </div>
+      <!-- Topic Categories -->
+      <section aria-label="Choose a topic category">
+        <h2 class="section-title">Choose a Topic</h2>
+        <div class="topic-grid" id="topicGrid" role="listbox" aria-label="Topic categories"></div>
       </section>
-    </main>
+
+      <!-- Practice Modes -->
+      <section aria-label="Choose practice mode">
+        <h2 class="section-title">Choose a Mode</h2>
+        <div class="mode-grid" id="modeGrid" role="listbox" aria-label="Practice modes"></div>
+      </section>
+
+      <!-- Topic Display -->
+      <section class="topic-display" id="topicDisplay" hidden aria-label="Your speaking topic">
+        <p class="topic-category-label" id="topicCategory"></p>
+        <p class="topic-text" id="topicText"></p>
+        <button id="newTopicBtn" class="btn-secondary" type="button">
+          Shuffle Topic <kbd class="kbd-hint">N</kbd>
+        </button>
+      </section>
+
+      <!-- Start Button -->
+      <div class="start-area">
+        <button id="startBtn" class="btn-primary btn-large" disabled>
+          Start Practice
+        </button>
+      </div>
+    </div>
+
+    <!-- ── Practice Phase ──────────────────────────────────── -->
+    <div id="practicePhase" hidden>
+      <div class="practice-layout">
+
+        <!-- Left: Video + Topic -->
+        <div class="practice-left">
+          <!-- Current Topic Banner -->
+          <div class="practice-topic-banner">
+            <p class="practice-topic-label" id="topicCategoryPractice"></p>
+            <p class="practice-topic-text" id="topicTextPractice"></p>
+          </div>
+
+          <!-- Timer -->
+          <div class="timer-area">
+            <div class="timer-display" id="timerDisplay" role="timer" aria-live="polite">00:00</div>
+            <div class="timer-bar" id="timerBar">
+              <div class="timer-bar-fill" id="timerBarFill"></div>
+            </div>
+          </div>
+
+          <!-- Video -->
+          <div class="video-wrapper">
+            <video id="preview" playsinline autoplay muted aria-label="Camera preview"></video>
+            <canvas class="visualizer-canvas" id="visualizerCanvas" aria-hidden="true"></canvas>
+          </div>
+
+          <!-- Engagement Meter -->
+          <div class="engagement-meter" role="meter" aria-label="Audience engagement" aria-valuemin="0" aria-valuemax="100">
+            <div class="engagement-header">
+              <span class="engagement-title">Audience Engagement</span>
+              <span class="engagement-label" id="engagementLabel">Waiting 0%</span>
+            </div>
+            <div class="engagement-track">
+              <div class="engagement-fill" id="engagementFill"></div>
+            </div>
+          </div>
+
+          <div class="practice-controls">
+            <span class="speech-status" id="speechStatus">Initializing...</span>
+            <span class="status-label" id="statusLabel"></span>
+            <button id="stopBtn" class="btn-danger" disabled>End Practice</button>
+          </div>
+        </div>
+
+        <!-- Right: Audience Comments -->
+        <div class="practice-right">
+          <div class="audience-header">
+            <div>
+              <p class="audience-eyebrow">AI Audience</p>
+              <h2 class="audience-title">Live Reactions</h2>
+            </div>
+            <div class="comment-count-badge">
+              <span id="commentCount">0</span> comments
+            </div>
+          </div>
+          <div class="comment-stream" id="commentStream" role="log" aria-live="polite" aria-label="Audience comments" tabindex="0"></div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <!-- ── Recap Modal ─────────────────────────────────────── -->
-  <div class="recap-modal" id="recapModal" hidden role="dialog" aria-label="Stream recap" aria-modal="true">
-    <div class="recap-card">
-      <h3>Stream Recap</h3>
-      <div id="recapContent"></div>
-      <button class="recap-close-btn" id="recapClose" type="button">Close</button>
+  <!-- ── Feedback Modal ──────────────────────────────────── -->
+  <div class="feedback-modal" id="feedbackModal" hidden role="dialog" aria-label="Practice feedback" aria-modal="true">
+    <div class="feedback-card">
+      <h3 class="feedback-title">Practice Complete</h3>
+      <div id="feedbackContent"></div>
+      <div class="feedback-actions">
+        <button class="btn-primary" id="feedbackPracticeAgain" type="button">Practice Again</button>
+        <button class="btn-secondary" id="feedbackClose" type="button">Close</button>
+      </div>
     </div>
   </div>
 
